@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Genel Uygulama Adı -->
+    <string name="app_name">Associum Hub</string>
+
+    <!-- Üst Bar (TopBar) -->
+    <string name="top_bar_title">Associum Hub</string>
+    <string name="toggle_drawer">Menüyü Aç/Kapat</string>
+
+    <!-- Alt Navigasyon (Bottom Navigation) -->
+    <string name="bottom_nav_home">Anasayfa 1</string>
+    <string name="bottom_nav_page2">Sayfa 2</string>
+    <string name="bottom_nav_page3">Sayfa 3</string>
+
+    <!-- Gezinme Çekmecesi (Navigation Drawer) -->
+    <string name="drawer_menu_title">Menü</string>
+    <string name="drawer_item_profile">Profil</string>
+    <string name="drawer_item_settings">Ayarlar</string>
+    <string name="drawer_item_about">Hakkında</string>
+
+    <!-- Ekranlar ve Diğer Metinler -->
+    <string name="home_loading_message">Mesaj yükleniyor…</string>
+    <string name="template_ui_title">Template Arayüzü</string>
+    <string name="drawer_template_ui_title">Drawer Template Arayüzü</string>
+
+    <string name="settings_language_label">Uygulama Dili</string>
+</resources>
+

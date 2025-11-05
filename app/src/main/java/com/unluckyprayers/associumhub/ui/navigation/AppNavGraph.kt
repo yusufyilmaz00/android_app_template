@@ -2,13 +2,12 @@ package com.unluckyprayers.associumhub.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.RoundRect
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
-import com.unluckyprayers.associumhub.ui.screen.home.HomeUI
+import com.unluckyprayers.associumhub.ui.screen.settings.SettingScreen
 import com.unluckyprayers.associumhub.ui.screen.template.DrawerTemplateUI
 import com.unluckyprayers.associumhub.ui.screen.template.TemplateUI
 
@@ -18,7 +17,8 @@ fun AppNavGraph(navController: NavController,
 ) {
     NavHost(
         navController = navController as NavHostController,
-        startDestination = Routes.PAGE1
+        startDestination = Routes.PAGE1,
+        modifier = modifier
     ) {
         composable(Routes.PAGE1)
         {
@@ -50,5 +50,11 @@ fun AppNavGraph(navController: NavController,
         {
             DrawerTemplateUI()
         }
+
+        composable(Routes.SETTINGS)
+        {
+            SettingScreen()
+        }
+
     }
 }

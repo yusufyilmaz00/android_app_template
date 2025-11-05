@@ -26,12 +26,12 @@ class HomeViewModel @Inject constructor(
             if (entity != null) {
                 HomeState(systemMessage = entity.messageText, isLoading = false)
             } else {
-                HomeState(systemMessage = "Mesaj yükleniyor...", isLoading = true)
+                HomeState(isLoading = true)
             }
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = HomeState()
+            initialValue = HomeState("",isLoading = true)
         )
 }

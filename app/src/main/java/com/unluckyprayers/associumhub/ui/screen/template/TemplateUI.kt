@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.unluckyprayers.associumhub.R
 import com.unluckyprayers.associumhub.ui.components.StarrySkyBackground
 
 @Composable
@@ -27,8 +29,7 @@ fun TemplateUI() {
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Template UI",
-                style = MaterialTheme.typography.titleLarge,
+                text = stringResource(id = R.string.template_ui_title),                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }

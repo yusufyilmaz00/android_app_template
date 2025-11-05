@@ -11,6 +11,7 @@ composeBom = "2024.09.00"
 #project
 materialIconsExtended = "1.7.8"
 roomVersion = "2.6.1"
+appcompat = "1.7.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,7 +35,8 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomVersion"}
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
-
+# appcompat for language change
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

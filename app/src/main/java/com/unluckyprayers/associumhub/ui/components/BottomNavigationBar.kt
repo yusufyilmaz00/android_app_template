@@ -12,11 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.unluckyprayers.associumhub.ui.navigation.Routes
+import com.unluckyprayers.associumhub.R
 
 @Composable
 fun BottomNavigationBar(
@@ -37,6 +39,7 @@ fun BottomNavigationBar(
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
+        val homeLabel = stringResource(id=R.string.bottom_nav_home)
         // PAGE 1
         NavigationBarItem(
             selected = isSelected(Routes.PAGE1),
@@ -50,10 +53,10 @@ fun BottomNavigationBar(
             icon = {
                 Icon(
                     imageVector = if (isSelected(Routes.PAGE1)) Icons.Filled.Home else Icons.Outlined.Home,
-                    contentDescription = "PAGE 1"
+                    contentDescription = homeLabel
                 )
             },
-            label = { Text("PAGE 1", style = MaterialTheme.typography.labelMedium) },
+            label = { Text(homeLabel, style = MaterialTheme.typography.labelMedium) },
             alwaysShowLabel = alwaysShowLabel,
             colors = NavigationBarItemDefaults.colors(
                 indicatorColor = MaterialTheme.colorScheme.primaryContainer,
@@ -64,6 +67,7 @@ fun BottomNavigationBar(
             )
         )
 
+        val page2Label = stringResource(id= R.string.bottom_nav_page2)
         // SEARCH
         NavigationBarItem(
             selected = isSelected(Routes.PAGE2),
@@ -77,10 +81,10 @@ fun BottomNavigationBar(
             icon = {
                 Icon(
                     imageVector = if (isSelected(Routes.PAGE2)) Icons.Filled.Home else Icons.Outlined.Home,
-                    contentDescription = "PAGE 2"
+                    contentDescription = page2Label
                 )
             },
-            label = { Text("PAGE 2", style = MaterialTheme.typography.labelMedium) },
+            label = { Text(page2Label, style = MaterialTheme.typography.labelMedium) },
             alwaysShowLabel = alwaysShowLabel,
             colors = NavigationBarItemDefaults.colors(
                 indicatorColor = MaterialTheme.colorScheme.primaryContainer,
@@ -91,6 +95,8 @@ fun BottomNavigationBar(
             )
         )
 
+        val page3Label = stringResource(id= R.string.bottom_nav_page3)
+        // PAGE 3
         NavigationBarItem(
             selected = isSelected(Routes.PAGE3),
             onClick = {
@@ -103,10 +109,10 @@ fun BottomNavigationBar(
             icon = {
                 Icon(
                     imageVector = if (isSelected(Routes.PAGE3)) Icons.Filled.Home else Icons.Outlined.Home,
-                    contentDescription = "PAGE 3"
+                    contentDescription = page3Label
                 )
             },
-            label = { Text("PAGE 3", style = MaterialTheme.typography.labelMedium) },
+            label = { Text(page3Label, style = MaterialTheme.typography.labelMedium) },
             alwaysShowLabel = alwaysShowLabel,
             colors = NavigationBarItemDefaults.colors(
                 indicatorColor = MaterialTheme.colorScheme.primaryContainer,

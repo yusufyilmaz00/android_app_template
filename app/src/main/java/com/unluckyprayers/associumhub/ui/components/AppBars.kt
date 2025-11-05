@@ -102,9 +102,9 @@ fun AppNavigationDrawer(
             text = "Settings",
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
-            isSelected = currentRoute == Routes.DRAWER2,
+            isSelected = currentRoute == Routes.SETTINGS,
             onClick = {
-                navController.navigateSingleTopTo(Routes.DRAWER2)
+                navController.navigateSingleTopTo(Routes.SETTINGS)
                 scope.launch { drawerState.close() }
             }
         )

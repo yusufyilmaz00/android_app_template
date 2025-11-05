@@ -79,4 +79,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     // app/build.gradle.kts
     implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
+    // AppCompat kütüphanesi (Dil değiştirme gibi özellikler için gerekli)
+    implementation(libs.androidx.appcompat) // Bu satırı ekleyi
 }

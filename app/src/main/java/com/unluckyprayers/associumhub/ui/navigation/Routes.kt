@@ -9,4 +9,7 @@ object Routes{
     const val DRAWER1= "Drawer 1"
     const val DRAWER2 = "Drawer 2"
     const val DRAWER3 = "Drawer 3"
+
+    // settings
+    const val SETTINGS = "Settings"
 }
