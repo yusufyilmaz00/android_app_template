@@ -77,4 +77,6 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     // Kotlin Coroutines ile Room desteği için
     implementation(libs.androidx.room.ktx)
+    // app/build.gradle.kts
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
 }
