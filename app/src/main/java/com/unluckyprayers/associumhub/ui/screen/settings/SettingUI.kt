@@ -1,5 +1,9 @@
 package com.unluckyprayers.associumhub.ui.screen.settings
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.copy
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,9 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,6 +60,7 @@ fun SettingsUI(
     }
 }
 
+
 @Composable
 private fun LanguageRowSelector(
     state: SettingState,
@@ -62,23 +69,19 @@ private fun LanguageRowSelector(
     var expanded by remember { mutableStateOf(false) }
     val currentLanguageName = state.supportedLanguages.find { it.code == state.currentLanguageCode }?.name ?: ""
 
-    // 1. Etiket ve Seçim kutusunu aynı satırda hizalamak için Row kullanıyoruz
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Elemanları iki uca yaslar
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // "Uygulama Dili" Etiketi
         Text(
             text = stringResource(id = R.string.settings_language_label),
             style = MaterialTheme.typography.titleMedium
         )
 
-        // 2. Açılır menüyü içeren ve tıklanabilir olan Box
         Box {
-            // Tıklanabilir, kenarlıklı kutu
             Row(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
@@ -98,11 +101,9 @@ private fun LanguageRowSelector(
                 )
             }
 
-            // 3. Açılır Menü
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                // Genişliği tetikleyici kutu ile aynı yapmak için .wrapContentWidth()
                 modifier = Modifier.wrapContentWidth()
             ) {
                 state.supportedLanguages.forEach { language ->
@@ -112,13 +113,12 @@ private fun LanguageRowSelector(
                             onLanguageSelected(language.code)
                             expanded = false
                         },
-                        // Seçili öğeyi vurgulamak için arka planı renklendirelim
                         modifier = Modifier
                             .background(
                                 if (language.code == state.currentLanguageCode) {
                                     MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                                 } else {
-                                    Color.Transparent // Arka plan şeffaf
+                                    Color.Transparent
                                 }
                             )
                     )

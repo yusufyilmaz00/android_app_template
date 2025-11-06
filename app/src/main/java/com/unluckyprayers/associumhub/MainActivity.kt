@@ -4,8 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -13,12 +22,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.unluckyprayers.associumhub.domain.viewmodel.AppViewModel
 import com.unluckyprayers.associumhub.ui.components.AppNavigationDrawer
 import com.unluckyprayers.associumhub.ui.components.BottomNavigationBar
 import com.unluckyprayers.associumhub.ui.components.MainTopAppBar
@@ -28,32 +42,72 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    // Aktivite seviyesinde AppViewModel'i alıyoruz
+    private val appViewModel: AppViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val appState by appViewModel.uiState.collectAsStateWithLifecycle()
+            val navController = rememberNavController()
+
+            LaunchedEffect(Unit) {
+                appViewModel.showAppLoading(false)
+            }
+
             AssociumTheme(darkTheme = true) {
-                val navController = rememberNavController()
-                MainScreen(navController = navController)
+                Box(modifier = Modifier.fillMaxSize()) {
+                    MainScreen(
+                        navController = navController,
+                        // AppViewModel'deki fonksiyonları doğrudan lambda olarak iletiyoruz
+                        onShowAppLoading = appViewModel::showAppLoading,
+                        onChangeLanguage = { langCode ->
+                            println("DEBUG: onChangeLanguage MainActivity'de çağrıldı - langCode: $langCode")
+                            val currentLocale = AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag()
+                            println("DEBUG: Mevcut locale: $currentLocale")
+
+                            val appLocale = LocaleListCompat.forLanguageTags(langCode)
+                            println("DEBUG: Yeni locale ayarlanıyor: $langCode")
+                            AppCompatDelegate.setApplicationLocales(appLocale)
+                            println("DEBUG: setApplicationLocales çağrıldı")
+                        }
+                    )
+
+                    // Yükleme ekranı (Tüm UI'ın üzerinde, merkezi kontrol)
+                    AnimatedVisibility(
+                        visible = appState.isAppLoading,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background.copy(alpha = 0.8f))
+                                .clickable(enabled = false, onClick = {}),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
             }
         }
     }
 }
-
 @Composable
-fun MainScreen(navController: NavController) {
-    // 1. Çekmecenin durumunu (açık/kapalı) yönetmek için bir state oluşturuluyor.
+fun MainScreen(
+    navController: NavController,
+    onShowAppLoading: (Boolean) -> Unit,
+    onChangeLanguage: (String) -> Unit
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
-    // 2. Mevcut rotayı (route) takip etmek için backstack dinleniyor.
-    // Bu, çekmecedeki seçili öğeyi vurgulamak için kullanılacak.
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            // Çekmecenin içeriğini oluşturan Composable
             AppNavigationDrawer(
                 navController = navController,
                 drawerState = drawerState,
@@ -61,17 +115,16 @@ fun MainScreen(navController: NavController) {
             )
         }
     ) {
-        // 4. Mevcut Scaffold yapısı, ModalNavigationDrawer içine alınıyor.
         Scaffold(
             modifier = Modifier.fillMaxSize(),
-            containerColor = MaterialTheme.colorScheme.background,
-            // 5. Sol üstteki menü ikonunu içeren üst bar ekleniyor.
             topBar = { MainTopAppBar(drawerState = drawerState) },
             bottomBar = { BottomNavigationBar(navController) }
         ) { innerPadding ->
             AppNavGraph(
-                navController = navController, // Buradaki "as NavHostController" cast'ına gerek kalmadı
+                navController = navController,
                 modifier = Modifier.padding(innerPadding),
+                onShowAppLoading = onShowAppLoading,
+                onChangeLanguage = onChangeLanguage
             )
         }
     }

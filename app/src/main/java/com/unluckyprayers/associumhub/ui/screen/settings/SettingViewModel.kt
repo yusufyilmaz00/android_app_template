@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
@@ -16,33 +18,47 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(SettingState())
     val uiState: StateFlow<SettingState> = _uiState.asStateFlow()
 
+    private val _eventChannel = Channel<SettingsEvent>()
+    val events = _eventChannel.receiveAsFlow()
+
     init {
-        loadSettings()
-    }
-
-    private fun loadSettings() {
-        val supported = listOf(
-            Language("en", "English"),
-            Language("tr", "Türkçe")
-        )
-
-        // Mevcut uygulama dilini al. Eğer ayarlanmamışsa null dönebilir.
-        val currentLocaleTag = AppCompatDelegate.getApplicationLocales()[0]?.toLanguageTag() ?: "en"
-
+        // ViewModel ilk oluşturulduğunda desteklenen dilleri yükle
         _uiState.update {
             it.copy(
-                supportedLanguages = supported,
-                currentLanguageCode = currentLocaleTag
+                supportedLanguages = listOf(
+                    Language("en", "English"),
+                    Language("tr", "Türkçe")
+                )
             )
         }
     }
 
-    // UI'dan gelen dil değiştirme isteğini işleyen fonksiyon
-    fun onLanguageChange(newLanguageCode: String) {
-        val appLocale = LocaleListCompat.forLanguageTags(newLanguageCode)
-        AppCompatDelegate.setApplicationLocales(appLocale)
+    /**
+     * NavGraph'tan gelen mevcut dil kodunu State'e yazar.
+     */
+    fun setCurrentLanguage(langCode: String) {
+        _uiState.update { it.copy(currentLanguageCode = langCode) }
+    }
 
-        // UI state'ini de güncelleyelim ki arayüz anında tepki versin (isteğe bağlı ama iyi bir pratik)
+    /**
+     * Kullanıcı yeni bir dil seçtiğinde tetiklenir.
+     */
+    fun onLanguageChange(newLanguageCode: String) {
+        println("DEBUG: onLanguageChange çağrıldı - newLanguageCode: $newLanguageCode")
+        println("DEBUG: currentLanguageCode: ${_uiState.value.currentLanguageCode}")
+
+        // Eğer zaten seçili olan dil tekrar seçilirse hiçbir şey yapma
+        if (_uiState.value.currentLanguageCode == newLanguageCode) {
+            println("DEBUG: Aynı dil seçildi, return ediliyor")
+            return
+        }
+
+        println("DEBUG: State güncelleniyor ve event gönderiliyor")
         _uiState.update { it.copy(currentLanguageCode = newLanguageCode) }
+        _eventChannel.trySend(SettingsEvent.ChangeLanguage(newLanguageCode))
+    }
+
+    sealed class SettingsEvent {
+        data class ChangeLanguage(val code: String) : SettingsEvent()
     }
 }
