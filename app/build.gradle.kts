@@ -57,6 +57,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -100,7 +101,8 @@ dependencies {
     // AppCompat kütüphanesi (Dil değiştirme gibi özellikler için gerekli)
     implementation(libs.androidx.appcompat) // Bu satırı ekleyi
     // Supabase ve login
-    implementation(platform("io.github.jan-tennert.supabase:bom: 3.0.1 "))
     implementation("io.ktor:ktor-client-core:3.0.0")
     implementation("io.ktor:ktor-client-cio:3.0.0")
-}
+    // login
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.0.1"))
+    implementation("io.github.jan-tennert.supabase:auth-kt")}
