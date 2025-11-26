@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,11 +7,25 @@ plugins {
     // project
     id ("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
     namespace = "com.unluckyprayers.associumhub"
     compileSdk = 36
+
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+
+    // Dosya varsa yükle
+    if (localPropertiesFile.exists()) {
+        localProperties.load(localPropertiesFile.inputStream())
+    }
+
+    // Değerleri al (eğer yoksa boş string döndürsün yoksa build patlar)
+    val supabaseKey = localProperties.getProperty("supabaseKey") ?: ""
+    val supabaseUrl = localProperties.getProperty("supabaseUrl") ?: ""
+
 
     defaultConfig {
         applicationId = "com.unluckyprayers.associumhub"
@@ -19,6 +35,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_KEY", "\"$supabaseKey\"")
     }
 
     buildTypes {
@@ -81,4 +99,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
     // AppCompat kütüphanesi (Dil değiştirme gibi özellikler için gerekli)
     implementation(libs.androidx.appcompat) // Bu satırı ekleyi
+    // Supabase ve login
+    implementation(platform("io.github.jan-tennert.supabase:bom: 3.0.1 "))
+    implementation("io.ktor:ktor-client-core:3.0.0")
+    implementation("io.ktor:ktor-client-cio:3.0.0")
 }
