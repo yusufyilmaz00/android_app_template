@@ -12,6 +12,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
+import com.unluckyprayers.associumhub.ui.screen.login.LoginScreen
+import com.unluckyprayers.associumhub.ui.screen.register.RegisterScreen
 import com.unluckyprayers.associumhub.ui.screen.settings.SettingScreen
 import com.unluckyprayers.associumhub.ui.screen.settings.SettingsViewModel
 import com.unluckyprayers.associumhub.ui.screen.template.DrawerTemplateUI
@@ -26,10 +28,38 @@ fun AppNavGraph(
 ) {
     NavHost(
         navController = navController as NavHostController,
-        startDestination = Routes.PAGE1,
+        startDestination = Routes.REGISTER,
         modifier = modifier
     ) {
-        composable(Routes.PAGE1)
+        // login and register
+        composable(Routes.REGISTER){
+            RegisterScreen(
+                onNavigateToLogin = {
+                    navController.navigate(Routes.LOGIN)
+                },
+                onRegisterSuccess = {
+                    navController.navigate(Routes.LOGIN) {
+                        popUpTo(Routes.REGISTER) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(Routes.LOGIN) {
+            LoginScreen(
+                onNavigateToRegister = {
+                    navController.navigate(Routes.REGISTER)
+                },
+                onLoginSuccess = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // screen pages
+        composable(Routes.HOME)
         {
             HomeScreen()
         }

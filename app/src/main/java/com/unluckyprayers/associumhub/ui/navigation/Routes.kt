@@ -1,7 +1,13 @@
 package com.unluckyprayers.associumhub.ui.navigation
 
 object Routes{
-    const val PAGE1 = "Page 1"
+    // login and register
+    const val REGISTER = "Register"
+    const val LOGIN = "Login"
+
+    // screen pages
+
+    const val HOME = "Home"
     const val PAGE2 = "Page 2"
     const val PAGE3 = "Page 3"
 

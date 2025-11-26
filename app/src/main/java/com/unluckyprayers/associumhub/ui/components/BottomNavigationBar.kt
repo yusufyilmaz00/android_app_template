@@ -42,9 +42,9 @@ fun BottomNavigationBar(
         val homeLabel = stringResource(id=R.string.bottom_nav_home)
         // PAGE 1
         NavigationBarItem(
-            selected = isSelected(Routes.PAGE1),
+            selected = isSelected(Routes.HOME),
             onClick = {
-                navController.navigate(Routes.PAGE1) {
+                navController.navigate(Routes.HOME) {
                     launchSingleTop = true
                     restoreState = true
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -52,7 +52,7 @@ fun BottomNavigationBar(
             },
             icon = {
                 Icon(
-                    imageVector = if (isSelected(Routes.PAGE1)) Icons.Filled.Home else Icons.Outlined.Home,
+                    imageVector = if (isSelected(Routes.HOME)) Icons.Filled.Home else Icons.Outlined.Home,
                     contentDescription = homeLabel
                 )
             },
