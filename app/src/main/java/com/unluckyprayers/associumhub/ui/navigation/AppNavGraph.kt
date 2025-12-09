@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.unluckyprayers.associumhub.data.local.model.UserState
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
 import com.unluckyprayers.associumhub.ui.screen.login.LoginScreen
 import com.unluckyprayers.associumhub.ui.screen.register.RegisterScreen
@@ -23,9 +24,15 @@ import com.unluckyprayers.associumhub.ui.screen.template.TemplateUI
 fun AppNavGraph(
     navController: NavController,
     modifier: Modifier = Modifier,
+    authState: UserState,
     onShowAppLoading: (Boolean) -> Unit,
     onChangeLanguage: (String) -> Unit
 ) {
+    val startDestination = when (authState) {
+        is UserState.Success -> Routes.HOME
+        else -> Routes.LOGIN
+    }
+
     NavHost(
         navController = navController as NavHostController,
         startDestination = Routes.REGISTER,
@@ -52,7 +59,7 @@ fun AppNavGraph(
                 },
                 onLoginSuccess = {
                     navController.navigate(Routes.HOME) {
-                        popUpTo(Routes.LOGIN) { inclusive = true }
+                        popUpTo(0)
                     }
                 }
             )

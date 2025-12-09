@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.unluckyprayers.associumhub.data.local.model.UserState
 import com.unluckyprayers.associumhub.domain.viewmodel.AppViewModel
 import com.unluckyprayers.associumhub.ui.components.AppNavigationDrawer
 import com.unluckyprayers.associumhub.ui.components.BottomNavigationBar
@@ -50,10 +51,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val appState by appViewModel.uiState.collectAsStateWithLifecycle()
+            val authState by appViewModel.authState.collectAsStateWithLifecycle()
             val navController = rememberNavController()
 
             LaunchedEffect(Unit) {
-                appViewModel.showAppLoading(false)
+                appViewModel.checkUserSession(this@MainActivity)
             }
 
             AssociumTheme(darkTheme = true) {
@@ -61,6 +63,7 @@ class MainActivity : ComponentActivity() {
                     MainScreen(
                         navController = navController,
                         // AppViewModel'deki fonksiyonları doğrudan lambda olarak iletiyoruz
+                        authState = authState,
                         onShowAppLoading = appViewModel::showAppLoading,
                         onChangeLanguage = { langCode ->
                             println("DEBUG: onChangeLanguage MainActivity'de çağrıldı - langCode: $langCode")
@@ -76,7 +79,7 @@ class MainActivity : ComponentActivity() {
 
                     // Yükleme ekranı (Tüm UI'ın üzerinde, merkezi kontrol)
                     AnimatedVisibility(
-                        visible = appState.isAppLoading,
+                        visible = appState.isAppLoading || authState is UserState.Loading,
                         enter = fadeIn(),
                         exit = fadeOut()
                     ) {
@@ -98,6 +101,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     navController: NavController,
+    authState: UserState,
     onShowAppLoading: (Boolean) -> Unit,
     onChangeLanguage: (String) -> Unit
 ) {
@@ -123,6 +127,7 @@ fun MainScreen(
             AppNavGraph(
                 navController = navController,
                 modifier = Modifier.padding(innerPadding),
+                authState = authState,
                 onShowAppLoading = onShowAppLoading,
                 onChangeLanguage = onChangeLanguage
             )
