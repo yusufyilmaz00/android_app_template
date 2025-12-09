@@ -106,7 +106,6 @@ dependencies {
     // login
     implementation(platform("io.github.jan-tennert.supabase:bom:3.0.1"))
     implementation("io.github.jan-tennert.supabase:auth-kt")
-    implementation("io.github.jan-tennert.supabase:serializer-kotlinx")
     // coil
     implementation("io.coil-kt:coil-compose:2.7.0")
     // Paging 3 Runtime
