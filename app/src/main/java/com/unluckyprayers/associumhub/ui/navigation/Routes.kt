@@ -11,6 +11,10 @@ object Routes{
     const val PAGE2 = "Page 2"
     const val PAGE3 = "Page 3"
 
+    // functional screens
+    const val CLUB_DETAIL_BASE = "Club"
+    const val CLUB_ID_ARG = "ClubId"
+    const val CLUB_DETAIL = "$CLUB_DETAIL_BASE/{$CLUB_ID_ARG}"
     // drawer test
     const val DRAWER1= "Drawer 1"
     const val DRAWER2 = "Drawer 2"

@@ -9,9 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.unluckyprayers.associumhub.data.local.model.UserState
+import com.unluckyprayers.associumhub.ui.screen.club.ClubDetailScreen
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
 import com.unluckyprayers.associumhub.ui.screen.login.LoginScreen
 import com.unluckyprayers.associumhub.ui.screen.register.RegisterScreen
@@ -68,7 +71,11 @@ fun AppNavGraph(
         // screen pages
         composable(Routes.HOME)
         {
-            HomeScreen()
+            HomeScreen(
+                onClubClick = { clubId ->
+                    navController.navigate("${Routes.CLUB_DETAIL_BASE}/$clubId")
+                }
+            )
         }
 
         composable(Routes.PAGE2)
@@ -79,6 +86,17 @@ fun AppNavGraph(
         composable(Routes.PAGE3)
         {
             TemplateUI()
+        }
+
+        // functional pages
+        composable(
+            route = Routes.CLUB_DETAIL,
+            arguments = listOf(navArgument(Routes.CLUB_ID_ARG) {
+                type = NavType.IntType
+            })
+        ) { backStackEntry ->
+            val clubId = backStackEntry.arguments?.getInt(Routes.CLUB_ID_ARG) ?: -1
+            ClubDetailScreen(clubId = clubId)
         }
 
         composable(Routes.DRAWER1)
