@@ -1,26 +1,54 @@
 package com.unluckyprayers.associumhub.ui.screen.club
 
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.unluckyprayers.associumhub.domain.model.club.Club
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.unluckyprayers.associumhub.ui.theme.DarkBackground
 
 @Composable
 fun ClubDetailScreen(
-    clubId: Int
+    viewModel: ClubDetailViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit
 ) {
-    val myClub = Club(
-        id = clubId,
-        name = "Example Club",
-        logoUrl = "https://example.com/logo.png",
-        coverUrl = "https://example.com/cover.jpg",
-        shortDescription = "This is an example club.",
-        aboutText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        sectors = listOf("Sector 1", "Sector 2"),
-        foundedYear = 2023,
-        memberCount = 50,
-        email = "william.henry.harrison@example-pet-store.com"
-    )
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(DarkBackground),
+        contentAlignment = Alignment.Center
+    ) {
 
-    ClubDetailUI(myClub)
+        if (uiState.isLoading) {
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+        }
+
+        else if (uiState.error != null) {
+            Text(
+                text = "Error: ${uiState.error}",
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+        else if (uiState.club != null) {
+
+            ClubDetailUI(
+                club = uiState.club!!,
+                onNavigateBack = onNavigateBack,
+                onMoreOptionsClick = {
+                    // Gelecekteki menü tıklama olayları burada yönetilecek.
+                }
+            )
+        }
+    }
 }

@@ -45,7 +45,11 @@ import com.unluckyprayers.associumhub.ui.theme.Slate300
 import com.unluckyprayers.associumhub.ui.theme.Slate400
 
 @Composable
-fun ClubDetailUI(club: Club) {
+fun ClubDetailUI(
+    club: Club, // Parametreyi ClubDetail olarak değiştir
+     onNavigateBack: () -> Unit,
+     onMoreOptionsClick: () -> Unit
+) {
     // Scroll state tüm sayfa için
     val scrollState = rememberScrollState()
 
@@ -103,8 +107,8 @@ fun ClubDetailUI(club: Club) {
 
         // En üst katman: Geri ve Menü butonları (Sayfa kayarken sabit veya üstte kalabilir)
         ClubTopNavigation(
-            onBackClick = { /* Handle back */ },
-            onMenuClick = { /* Handle menu */ }
+            onBackClick = { onNavigateBack() },
+            onMenuClick = { onMoreOptionsClick() }
         )
     }
 }
