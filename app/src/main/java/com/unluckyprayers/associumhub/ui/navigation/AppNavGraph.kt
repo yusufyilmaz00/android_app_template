@@ -96,7 +96,7 @@ fun AppNavGraph(
             })
         ) { backStackEntry ->
             val clubId = backStackEntry.arguments?.getInt(Routes.CLUB_ID_ARG) ?: -1
-            ClubDetailScreen(clubId = clubId)
+            ClubDetailScreen(onNavigateBack = { navController.popBackStack() })
         }
 
         composable(Routes.DRAWER1)
