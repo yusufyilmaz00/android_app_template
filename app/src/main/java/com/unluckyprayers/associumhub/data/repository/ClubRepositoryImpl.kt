@@ -5,7 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.unluckyprayers.associumhub.data.paging.ClubsPagingSource
 import com.unluckyprayers.associumhub.data.remote.service.ApiService
-import com.unluckyprayers.associumhub.domain.model.club.Club
+import com.unluckyprayers.associumhub.domain.model.club.ClubItem
 import com.unluckyprayers.associumhub.domain.repository.ClubRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -14,7 +14,7 @@ class ClubRepositoryImpl @Inject constructor(
     private val api: ApiService
 ) : ClubRepository {
 
-    override fun getClubsPaging(): Flow<PagingData<Club>> {
+    override fun getClubsPaging(): Flow<PagingData<ClubItem>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,

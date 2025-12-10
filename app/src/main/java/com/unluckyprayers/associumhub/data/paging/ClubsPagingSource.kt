@@ -4,13 +4,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.unluckyprayers.associumhub.data.remote.mapper.toDomain
 import com.unluckyprayers.associumhub.data.remote.service.ApiService
-import com.unluckyprayers.associumhub.domain.model.club.Club
+import com.unluckyprayers.associumhub.domain.model.club.ClubItem
 
 class ClubsPagingSource(
     private val api: ApiService
-) : PagingSource<Int, Club>() {
+) : PagingSource<Int, ClubItem>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Club> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ClubItem> {
         return try {
             val page = params.key ?: 1
 
@@ -29,7 +29,7 @@ class ClubsPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Club>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, ClubItem>): Int? {
         return state.anchorPosition?.let { anchorPos ->
             state.closestPageToPosition(anchorPos)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPos)?.nextKey?.minus(1)

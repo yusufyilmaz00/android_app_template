@@ -1,6 +1,6 @@
 package com.unluckyprayers.associumhub.data.remote.dto.club
 
-data class ClubResponseDto(
+data class ClubItemResponseDto(
     val id: Int,
     val name: String,
     val logo_url: String,

@@ -1,9 +1,9 @@
 package com.unluckyprayers.associumhub.data.remote.mapper
 
-import com.unluckyprayers.associumhub.data.remote.dto.club.ClubResponseDto
-import com.unluckyprayers.associumhub.domain.model.club.Club
+import com.unluckyprayers.associumhub.data.remote.dto.club.ClubItemResponseDto
+import com.unluckyprayers.associumhub.domain.model.club.ClubItem
 
-fun ClubResponseDto.toDomain() = Club(
+fun ClubItemResponseDto.toDomain() = ClubItem(
     id = id,
     name = name,
     logoUrl = logo_url,

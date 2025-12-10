@@ -12,9 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.unluckyprayers.associumhub.domain.model.club.Club
+import com.unluckyprayers.associumhub.domain.model.club.ClubItem
 import com.unluckyprayers.associumhub.ui.components.StarrySkyBackground
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -47,7 +48,8 @@ import kotlinx.coroutines.flow.flowOf
 @Composable
 fun HomeUI(
     modifier: Modifier = Modifier,
-    clubs: LazyPagingItems<Club>
+    clubs: LazyPagingItems<ClubItem>,
+    onClubClick: (Int) -> Unit
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         // 1) Arka Plan (Yıldızlı Gökyüzü)
@@ -100,7 +102,8 @@ fun HomeUI(
             else {
                 ClubsPagingGrid(
                     clubs = clubs,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    onClubClick = onClubClick
                 )
             }
         }
@@ -140,8 +143,9 @@ fun ClubSearchBar(modifier: Modifier = Modifier) {
  */
 @Composable
 fun ClubsPagingGrid(
-    clubs: LazyPagingItems<Club>,
-    modifier: Modifier = Modifier
+    clubs: LazyPagingItems<ClubItem>,
+    modifier: Modifier = Modifier,
+    onClubClick: (Int) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -154,7 +158,7 @@ fun ClubsPagingGrid(
         items(clubs.itemCount) { index ->
             val club = clubs[index]
             if (club != null) {
-                ClubCard(club = club)
+                ClubCard(clubItem = club, onClick = { onClubClick(club.id) })
             }
         }
 
@@ -196,7 +200,10 @@ fun ClubsPagingGrid(
 }
 
 @Composable
-fun ClubCard(club: Club) {
+fun ClubCard(
+    clubItem: ClubItem,
+    onClick: () -> Unit
+) {
     val defaultImagePainter = rememberVectorPainter(Icons.Default.ImageNotSupported)
 
     Card(
@@ -206,6 +213,8 @@ fun ClubCard(club: Club) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .clickable(onClick = onClick)
+
     ) {
         Column(
             modifier = Modifier.padding(8.dp),
@@ -221,10 +230,10 @@ fun ClubCard(club: Club) {
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(club.logoUrl)
+                        .data(clubItem.logoUrl)
                         .crossfade(true)
                         .build(),
-                    contentDescription = "${club.name} logo",
+                    contentDescription = "${clubItem.name} logo",
                     placeholder = defaultImagePainter,
                     error = defaultImagePainter,
                     fallback = defaultImagePainter,
@@ -239,7 +248,7 @@ fun ClubCard(club: Club) {
                     modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Text(
-                        text = club.foundedYear.toString(),
+                        text = clubItem.foundedYear.toString(),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -251,7 +260,7 @@ fun ClubCard(club: Club) {
 
             // İsim
             Text(
-                text = club.name,
+                text = clubItem.name,
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp
@@ -278,23 +287,24 @@ fun ClubCard(club: Club) {
 )
 @Composable
 fun HomeUIPreview() {
-    val mockClubs = listOf(
-        Club(1, "Debate Team", 2010, ""), // URL boş, placeholder görünecek
-        Club(2, "Coding Club", 2015, ""),
-        Club(3, "Photography", 2018, ""),
-        Club(4, "Art & Design", 2008, ""),
-        Club(5, "Book Club", 2012, ""),
-        Club(6, "Music Soc.", 2016, "")
+    val mockClubItems = listOf(
+        ClubItem(1, "Debate Team", 2010, ""), // URL boş, placeholder görünecek
+        ClubItem(2, "Coding Club", 2015, ""),
+        ClubItem(3, "Photography", 2018, ""),
+        ClubItem(4, "Art & Design", 2008, ""),
+        ClubItem(5, "Book Club", 2012, ""),
+        ClubItem(6, "Music Soc.", 2016, "")
     )
     val flow = remember {
-        flowOf(PagingData.from(mockClubs))
+        flowOf(PagingData.from(mockClubItems))
     }
 
     val lazyPagingItems = flow.collectAsLazyPagingItems()
 
     MaterialTheme {
         HomeUI(
-            clubs = lazyPagingItems
+            clubs = lazyPagingItems,
+            onClubClick = {}
         )
     }
 }
