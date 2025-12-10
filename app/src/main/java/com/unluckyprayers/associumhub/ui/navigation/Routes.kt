@@ -18,4 +18,9 @@ object Routes{
 
     // settings
     const val SETTINGS = "Settings"
+
+    val authRoutes = listOf(LOGIN, REGISTER)
+    fun isAuthRoute(route: String?): Boolean {
+        return route in authRoutes
+    }
 }

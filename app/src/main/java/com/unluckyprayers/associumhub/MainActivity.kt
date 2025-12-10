@@ -38,6 +38,7 @@ import com.unluckyprayers.associumhub.ui.components.AppNavigationDrawer
 import com.unluckyprayers.associumhub.ui.components.BottomNavigationBar
 import com.unluckyprayers.associumhub.ui.components.MainTopAppBar
 import com.unluckyprayers.associumhub.ui.navigation.AppNavGraph
+import com.unluckyprayers.associumhub.ui.navigation.Routes
 import com.unluckyprayers.associumhub.ui.theme.AssociumTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -109,29 +110,42 @@ fun MainScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            AppNavigationDrawer(
-                navController = navController,
-                drawerState = drawerState,
-                currentRoute = currentRoute
-            )
+    if (!Routes.isAuthRoute(currentRoute)) {
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                AppNavigationDrawer(
+                    navController = navController,
+                    drawerState = drawerState,
+                    currentRoute = currentRoute
+                )
+            }
+        ) {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                topBar = { MainTopAppBar(drawerState = drawerState) },
+                bottomBar = { BottomNavigationBar(navController) }
+            ) { innerPadding ->
+                AppNavGraph(
+                    navController = navController,
+                    modifier = Modifier.padding(innerPadding), // Scaffold'dan gelen padding'i uygula
+                    authState = authState,
+                    onShowAppLoading = onShowAppLoading,
+                    onChangeLanguage = onChangeLanguage
+                )
+            }
         }
-    ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            topBar = { MainTopAppBar(drawerState = drawerState) },
-            bottomBar = { BottomNavigationBar(navController) }
-        ) { innerPadding ->
-            AppNavGraph(
-                navController = navController,
-                modifier = Modifier.padding(innerPadding),
-                authState = authState,
-                onShowAppLoading = onShowAppLoading,
-                onChangeLanguage = onChangeLanguage
-            )
-        }
+    } else {
+        // Rota Login veya Register ise, Scaffold olmadan direkt AppNavGraph'ı çağır.
+        // Bu sayede TopBar ve BottomBar görünmez.
+        AppNavGraph(
+            navController = navController,
+            modifier = Modifier.fillMaxSize(), // Tam ekran kaplaması için
+            authState = authState,
+            onShowAppLoading = onShowAppLoading,
+            onChangeLanguage = onChangeLanguage
+        )
     }
 }
 
