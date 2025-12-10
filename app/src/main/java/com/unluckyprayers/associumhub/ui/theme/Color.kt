@@ -33,3 +33,11 @@ val AssociumError = Color(0xFFEF4444)
 val AssociumOnError = Color(0xFFFFFFFF)
 val AssociumErrorContainer = Color(0xFF7F1D1D)
 val AssociumOnErrorContainer = Color(0xFFFFE4E6)
+
+// Club Detail Ui
+val NeonGreen = Color(0xFF00FF66)
+val DarkBackground = Color(0xFF0D1A2E)
+val CardBackground = Color(0xFF12213A)
+val LightText = Color(0xFFF5F8F6)
+val Slate300 = Color(0xFFCBD5E1)
+val Slate400 = Color(0xFF94A3B8)
