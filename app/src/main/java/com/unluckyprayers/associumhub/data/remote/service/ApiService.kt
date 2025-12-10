@@ -1,6 +1,7 @@
 package com.unluckyprayers.associumhub.data.remote.service
 
 
+import com.unluckyprayers.associumhub.data.remote.dto.club.ClubDetailResponseDto
 import com.unluckyprayers.associumhub.data.remote.dto.club.ClubsApiResponseDto
 import retrofit2.http.GET
 import okhttp3.MultipartBody
@@ -20,4 +21,10 @@ interface ApiService {
         @Query("page") page: Int,
         @Query("limit") limit: Int = 20
     ): ClubsApiResponseDto
+
+    @GET("v1/club/{clubId}")
+    suspend fun getClubById(
+        @Path("clubId") clubId: Int
+    ): ClubDetailResponseDto
+
 }
