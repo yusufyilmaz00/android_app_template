@@ -3,6 +3,7 @@ package com.unluckyprayers.associumhub.ui.components
 import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,7 @@ fun MainTopAppBar(drawerState: DrawerState) {
     val scope = rememberCoroutineScope()
     TopAppBar(
         title = { Text("Associum Hub") },
+        modifier = Modifier.height(64.dp),
         navigationIcon = {
             IconButton(onClick = {
                 scope.launch {
@@ -57,7 +59,9 @@ fun MainTopAppBar(drawerState: DrawerState) {
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
             titleContentColor = MaterialTheme.colorScheme.onSurface
-        )
+        ),
+        windowInsets = WindowInsets(top = 40.dp)
+
     )
 }
 
