@@ -140,23 +140,21 @@ fun ClubHeroSection(coverUrl: String?, logoUrl: String?) {
                 )
         )
 
-        // Logo (Sol altta asılı duran)
-        // CSS: -bottom-10 left-6. Compose'da Box alignment + offset kullanıyoruz.
         Box(
             modifier = Modifier
-                .size(80.dp) // size-20
+                .size(80.dp)
                 .align(Alignment.BottomStart)
-                .offset(x = 24.dp, y = 40.dp) // Aşağı sarkıtma
+                .offset(x = 24.dp, y = 40.dp)
                 .shadow(elevation = 8.dp, shape = RoundedCornerShape(12.dp))
                 .clip(RoundedCornerShape(12.dp))
                 .border(4.dp, DarkBackground, RoundedCornerShape(12.dp)) // border-[#0d1a2e]
-                .background(Color.Black)
+                .background(Color.White)
         ) {
             Image(
                 painter = rememberAsyncImagePainter(logoUrl ?: "https://via.placeholder.com/150"),
                 contentDescription = "Club Logo",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                contentScale = ContentScale.Fit, //Crop
+                modifier = Modifier.fillMaxSize().padding(2.dp)
             )
             // Neon Glow effect (Basitleştirilmiş border)
             Box(
