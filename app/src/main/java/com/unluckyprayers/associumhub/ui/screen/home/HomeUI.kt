@@ -43,6 +43,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.unluckyprayers.associumhub.R
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -204,7 +205,7 @@ fun ClubCard(
     clubItem: ClubItem,
     onClick: () -> Unit
 ) {
-    val defaultImagePainter = rememberVectorPainter(Icons.Default.ImageNotSupported)
+    val defaultLogoUrl = "https://pbginizanmtsllleimim.supabase.co/storage/v1/object/public/club-assets/logos/associumhub_default_logo.png"
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -230,13 +231,15 @@ fun ClubCard(
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(clubItem.logoUrl)
+                        // 1. URL boş veya null ise varsayılan URL'yi kullan
+                        .data(clubItem.logoUrl.takeIf { !it.isNullOrBlank() } ?: defaultLogoUrl)
                         .crossfade(true)
+                        // 2. Hata durumunda da varsayılan URL'yi kullan
+                        .error(R.drawable.associumhub_default_cover)
                         .build(),
                     contentDescription = "${clubItem.name} logo",
-                    placeholder = defaultImagePainter,
-                    error = defaultImagePainter,
-                    fallback = defaultImagePainter,
+                    // placeholder'ı yine de tutmak iyi bir pratiktir
+                    placeholder = rememberVectorPainter(Icons.Default.ImageNotSupported),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()
                 )
