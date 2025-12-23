@@ -46,3 +46,5 @@ val Slate400 = Color(0xFF94A3B8)
 //val DarkBackground = Color(0xFF0D0F12)
 val GlassPanelColor = Color(0xFF14191E).copy(alpha = 0.6f)
 val CardBorderColor = Color(0xFFFFFFFF).copy(alpha = 0.08f)
+
+private val GlassBottomNavColor = Color(0xFF050b14).copy(alpha = 0.8f)
