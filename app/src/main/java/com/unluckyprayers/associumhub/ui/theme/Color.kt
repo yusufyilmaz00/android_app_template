@@ -41,3 +41,8 @@ val CardBackground = Color(0xFF12213A)
 val LightText = Color(0xFFF5F8F6)
 val Slate300 = Color(0xFFCBD5E1)
 val Slate400 = Color(0xFF94A3B8)
+
+//val NeonGreen = Color(0xFF47eb7e)
+//val DarkBackground = Color(0xFF0D0F12)
+val GlassPanelColor = Color(0xFF14191E).copy(alpha = 0.6f)
+val CardBorderColor = Color(0xFFFFFFFF).copy(alpha = 0.08f)
