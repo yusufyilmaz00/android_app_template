@@ -100,9 +100,9 @@ fun BottomNavigationBar(
         val page3Label = stringResource(id= R.string.bottom_nav_page3)
         // PAGE 3
         NavigationBarItem(
-            selected = isSelected(Routes.PAGE3),
+            selected = isSelected(Routes.PROFILE),
             onClick = {
-                navController.navigate(Routes.PAGE3) {
+                navController.navigate(Routes.PROFILE) {
                     launchSingleTop = true
                     restoreState = true
                     popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -110,7 +110,7 @@ fun BottomNavigationBar(
             },
             icon = {
                 Icon(
-                    imageVector = if (isSelected(Routes.PAGE3)) Icons.Filled.Home else Icons.Outlined.Home,
+                    imageVector = if (isSelected(Routes.PROFILE)) Icons.Filled.Home else Icons.Outlined.Home,
                     contentDescription = page3Label
                 )
             },
