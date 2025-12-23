@@ -1,6 +1,7 @@
 package com.unluckyprayers.associumhub.data.repository
 
 import android.content.Context
+import android.util.Log
 import com.unluckyprayers.associumhub.data.local.model.UserState
 import com.unluckyprayers.associumhub.data.local.pref.SharedPrefManager
 import com.unluckyprayers.associumhub.data.remote.service.SupabaseClient
@@ -49,6 +50,7 @@ class AuthRepository @Inject constructor() {
             saveToken(context)
             val user = client.auth.currentUserOrNull()
             val role = user?.appMetadata?.get("role")?.jsonPrimitive?.content ?: "standard_user"
+            Log.d("AuthRepository", "User role: $role")
 
             _userState.value = UserState.Success("Logged in user successfully!", role = role)
         } catch (e: Exception) {
