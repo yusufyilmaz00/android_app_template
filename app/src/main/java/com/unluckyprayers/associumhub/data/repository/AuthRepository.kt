@@ -9,6 +9,7 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.serialization.json.jsonPrimitive
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -31,8 +32,8 @@ class AuthRepository @Inject constructor() {
                 password = userPassword
             }
             saveToken(context)
-            _userState.value = UserState.Success("Registered user successfully!")
-        } catch (e: Exception) {
+            _userState.value = UserState.Success("Registered user successfully!", role = "standard_user")        } catch (e: Exception) {
+        } catch (e : Exception ){
             _userState.value = UserState.Error(e.message ?: "Unknown sign-up error")
         }
     }
@@ -44,8 +45,12 @@ class AuthRepository @Inject constructor() {
                 email = userEmail
                 password = userPassword
             }
+
             saveToken(context)
-            _userState.value = UserState.Success("Logged in user successfully!")
+            val user = client.auth.currentUserOrNull()
+            val role = user?.appMetadata?.get("role")?.jsonPrimitive?.content ?: "standard_user"
+
+            _userState.value = UserState.Success("Logged in user successfully!", role = role)
         } catch (e: Exception) {
             _userState.value = UserState.Error(e.message ?: "Unknown login error")
         }
@@ -54,7 +59,7 @@ class AuthRepository @Inject constructor() {
     suspend fun logout() {
         try {
             client.auth.signOut()
-            _userState.value = UserState.Success("Logged out successfully!")
+            _userState.value = UserState.Success("Logged out successfully!", role = "standard_user")
         } catch (e: Exception) {
             _userState.value = UserState.Error(e.message ?: "Unknown logout error")
         }
@@ -82,7 +87,9 @@ class AuthRepository @Inject constructor() {
                 client.auth.retrieveUser(token)
                 client.auth.refreshCurrentSession()
                 saveToken(context)
-                _userState.value = UserState.Success("User is already logged in!")
+                val user = client.auth.currentUserOrNull()
+                val role = user?.appMetadata?.get("role")?.jsonPrimitive?.content ?: "standard_user"
+                _userState.value = UserState.Success("User is already logged in!",role = role)
             }
         } catch (e: Exception) {
             _userState.value = UserState.Error(e.message ?: "Unknown error while checking user status")
