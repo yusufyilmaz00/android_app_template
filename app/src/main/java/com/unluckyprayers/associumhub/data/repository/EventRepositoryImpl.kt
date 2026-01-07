@@ -142,7 +142,7 @@ class EventRepositoryImpl @Inject constructor(
             if (response.error != null) {
                 Result.failure(Exception(response.error))
             } else {
-                val events = response.events?.map { it.toDomain() } ?: emptyList()
+                val events = response.data?.map { it.toDomain() } ?: emptyList()
                 Result.success(events)
             }
         } catch (e: Exception) {

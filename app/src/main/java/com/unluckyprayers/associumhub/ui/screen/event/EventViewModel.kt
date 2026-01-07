@@ -23,6 +23,8 @@ class EventViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(EventUiState())
     val uiState: StateFlow<EventUiState> = _uiState.asStateFlow()
+    
+    private var lastLoadedClubId: String? = null
 
     init {
         // AuthState'i dinle ve clubId'yi al
@@ -31,8 +33,12 @@ class EventViewModel @Inject constructor(
                 when (authState) {
                     is UserState.Success -> {
                         authState.clubId?.let { clubId ->
-                            Log.d("EventViewModel", "Club ID: $clubId")
-                            loadEvents(clubId)
+                            // Sadece clubId değiştiyse veya ilk kez yükleniyorsa yükle
+                            if (lastLoadedClubId != clubId) {
+                                Log.d("EventViewModel", "Club ID: $clubId")
+                                lastLoadedClubId = clubId
+                                loadEvents(clubId)
+                            }
                         } ?: run {
                             _uiState.update {
                                 it.copy(
@@ -63,24 +69,32 @@ class EventViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             getClubEventsUseCase(clubId)
-                .onSuccess { events ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            events = events,
-                            errorMessage = null
-                        )
+                .fold(
+                    onSuccess = { events ->
+                        Log.d("EventViewModel", "Events loaded successfully. Count: ${events.size}")
+                        events.forEachIndexed { index, event ->
+                            Log.d("EventViewModel", "Event[$index]: ${event.title}, date: ${event.date}")
+                        }
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                events = events,
+                                errorMessage = null
+                            )
+                        }
+                        Log.d("EventViewModel", "State updated. Events count in state: ${_uiState.value.events.size}")
+                    },
+                    onFailure = { exception ->
+                        Log.e("EventViewModel", "Failed to load events: ${exception.message}", exception)
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                events = emptyList(),
+                                errorMessage = exception.message ?: "Etkinlikler yüklenemedi"
+                            )
+                        }
                     }
-                }
-                .onFailure { exception ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            events = emptyList(),
-                            errorMessage = exception.message ?: "Etkinlikler yüklenemedi"
-                        )
-                    }
-                }
+                )
         }
     }
 

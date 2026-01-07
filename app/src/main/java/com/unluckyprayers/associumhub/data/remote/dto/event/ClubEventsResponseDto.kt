@@ -3,8 +3,8 @@ package com.unluckyprayers.associumhub.data.remote.dto.event
 import com.google.gson.annotations.SerializedName
 
 data class ClubEventsResponseDto(
-    @SerializedName("events")
-    val events: List<ClubEventDto>? = null,
+    @SerializedName("data")
+    val data: List<ClubEventDto>? = null,
     @SerializedName("error")
     val error: String? = null
 )
@@ -21,5 +21,11 @@ data class ClubEventDto(
     @SerializedName("event_time")
     val eventTime: String? = null,
     @SerializedName("image_url")
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+    @SerializedName("location")
+    val location: String? = null,
+    @SerializedName("description")
+    val description: String? = null,
+    @SerializedName("club_id")
+    val clubId: Int? = null
 )

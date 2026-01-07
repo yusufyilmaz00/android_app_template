@@ -70,6 +70,13 @@ fun EventUi(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
+                uiState.events.isEmpty() -> {
+                    Text(
+                        text = "Henüz etkinlik bulunmamaktadır",
+                        color = TextSecondary,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
                 else -> {
                     LazyColumn(
                         modifier = Modifier
