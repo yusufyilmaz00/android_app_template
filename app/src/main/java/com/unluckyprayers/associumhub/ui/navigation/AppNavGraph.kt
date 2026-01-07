@@ -22,6 +22,7 @@ import com.unluckyprayers.associumhub.data.local.model.UserState
 import com.unluckyprayers.associumhub.domain.viewmodel.AppViewModel
 import com.unluckyprayers.associumhub.ui.screen.club.ClubDetailScreen
 import com.unluckyprayers.associumhub.ui.screen.event.EventScreen
+import com.unluckyprayers.associumhub.ui.screen.eventcreate.CreateEventScreen
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
 import com.unluckyprayers.associumhub.ui.screen.login.LoginScreen
 import com.unluckyprayers.associumhub.ui.screen.profile.moderatorprofile.ModeratorProfileScreen
@@ -97,8 +98,17 @@ fun AppNavGraph(
 
         // Moderator only - Event screen
         composable(Routes.MODERATOR_EVENT) {
-            // TODO: Moderatör etkinlik ekranı - şimdilik template kullanılıyor
-            EventScreen()
+            EventScreen(
+                onBackClick = { navController.popBackStack() },
+                onAddEventClick = { navController.navigate(Routes.CREATE_EVENT) }
+            )
+        }
+
+        // Create Event screen
+        composable(Routes.CREATE_EVENT) {
+            CreateEventScreen(
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
 
         composable(Routes.PROFILE) {

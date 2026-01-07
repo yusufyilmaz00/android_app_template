@@ -38,7 +38,10 @@ import com.unluckyprayers.associumhub.ui.theme.NeonGreen
 import com.unluckyprayers.associumhub.ui.theme.SheetBackground
 import com.unluckyprayers.associumhub.ui.theme.TextHint
 import com.unluckyprayers.associumhub.ui.theme.TextWhite
+import java.text.SimpleDateFormat
+import java.util.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateEventUi(
     uiState: CreateEventUiState, // State verisini buradan alıyoruz
@@ -51,6 +54,207 @@ fun CreateEventUi(
     onCancelClick: () -> Unit = {},
     onPostClick: () -> Unit = {}
 ) {
+    // Bugünün başlangıç zamanını hesapla (gece yarısı)
+    val today = remember {
+        Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    // Date Picker State - sadece bugün ve sonrası seçilebilir
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+                return utcTimeMillis >= today
+            }
+
+            override fun isSelectableYear(year: Int): Boolean {
+                return year >= Calendar.getInstance().get(Calendar.YEAR)
+            }
+        }
+    )
+
+    // Seçilen tarihi sakla (saat validasyonu için)
+    var selectedDateMillis by remember { mutableStateOf<Long?>(null) }
+
+    // Time Picker State
+    var showTimePicker by remember { mutableStateOf(false) }
+    var timeValidationError by remember { mutableStateOf<String?>(null) }
+    val currentCalendar = Calendar.getInstance()
+    val timePickerState = rememberTimePickerState(
+        initialHour = currentCalendar.get(Calendar.HOUR_OF_DAY),
+        initialMinute = currentCalendar.get(Calendar.MINUTE)
+    )
+
+    // Seçilen tarih bugün mü kontrol et
+    fun isSelectedDateToday(): Boolean {
+        selectedDateMillis?.let { millis ->
+            val selectedCal = Calendar.getInstance().apply { timeInMillis = millis }
+            val todayCal = Calendar.getInstance()
+            return selectedCal.get(Calendar.YEAR) == todayCal.get(Calendar.YEAR) &&
+                    selectedCal.get(Calendar.DAY_OF_YEAR) == todayCal.get(Calendar.DAY_OF_YEAR)
+        }
+        return false
+    }
+
+    // Seçilen saat geçerli mi kontrol et
+    fun isTimeValid(hour: Int, minute: Int): Boolean {
+        if (!isSelectedDateToday()) return true
+        val now = Calendar.getInstance()
+        val selectedMinutes = hour * 60 + minute
+        val currentMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+        return selectedMinutes > currentMinutes
+    }
+
+    // Date Picker Dialog
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            selectedDateMillis = millis
+                            val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+                            val formattedDate = dateFormat.format(Date(millis))
+                            onDateChange(formattedDate)
+                            // Tarih değiştiğinde saat sıfırlansın
+                            onTimeChange("")
+                            timeValidationError = null
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text("OK", color = NeonGreen)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancel", color = TextWhite.copy(alpha = 0.6f))
+                }
+            },
+            colors = DatePickerDefaults.colors(
+                containerColor = SheetBackground
+            )
+        ) {
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    containerColor = SheetBackground,
+                    titleContentColor = TextWhite,
+                    headlineContentColor = TextWhite,
+                    weekdayContentColor = TextHint,
+                    subheadContentColor = TextWhite,
+                    navigationContentColor = TextWhite,
+                    yearContentColor = TextWhite,
+                    disabledYearContentColor = TextHint.copy(alpha = 0.3f),
+                    currentYearContentColor = NeonGreen,
+                    selectedYearContentColor = SheetBackground,
+                    selectedYearContainerColor = NeonGreen,
+                    dayContentColor = TextWhite,
+                    disabledDayContentColor = TextHint.copy(alpha = 0.3f),
+                    selectedDayContentColor = SheetBackground,
+                    selectedDayContainerColor = NeonGreen,
+                    todayContentColor = NeonGreen,
+                    todayDateBorderColor = NeonGreen
+                )
+            )
+        }
+    }
+
+    // Time Picker Dialog
+    if (showTimePicker) {
+        AlertDialog(
+            onDismissRequest = { 
+                showTimePicker = false
+                timeValidationError = null
+            },
+            containerColor = SheetBackground,
+            title = {
+                Column {
+                    Text(
+                        text = "Select Time",
+                        color = TextWhite,
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (isSelectedDateToday()) {
+                        Text(
+                            text = "Today - select a future time",
+                            color = TextHint,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
+            },
+            text = {
+                Column {
+                    TimePicker(
+                        state = timePickerState,
+                        colors = TimePickerDefaults.colors(
+                            containerColor = SheetBackground,
+                            clockDialColor = InputBackground,
+                            clockDialSelectedContentColor = SheetBackground,
+                            clockDialUnselectedContentColor = TextWhite,
+                            selectorColor = NeonGreen,
+                            periodSelectorBorderColor = BorderColor,
+                            periodSelectorSelectedContainerColor = NeonGreen,
+                            periodSelectorUnselectedContainerColor = InputBackground,
+                            periodSelectorSelectedContentColor = SheetBackground,
+                            periodSelectorUnselectedContentColor = TextWhite,
+                            timeSelectorSelectedContainerColor = NeonGreen,
+                            timeSelectorUnselectedContainerColor = InputBackground,
+                            timeSelectorSelectedContentColor = SheetBackground,
+                            timeSelectorUnselectedContentColor = TextWhite
+                        )
+                    )
+                    // Hata mesajı
+                    if (timeValidationError != null) {
+                        Text(
+                            text = timeValidationError!!,
+                            color = Color(0xFFEF4444),
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val hour = timePickerState.hour
+                        val minute = timePickerState.minute
+                        
+                        if (isTimeValid(hour, minute)) {
+                            val amPm = if (hour >= 12) "PM" else "AM"
+                            val hour12 = if (hour == 0) 12 else if (hour > 12) hour - 12 else hour
+                            val formattedTime = String.format("%d:%02d %s", hour12, minute, amPm)
+                            onTimeChange(formattedTime)
+                            showTimePicker = false
+                            timeValidationError = null
+                        } else {
+                            timeValidationError = "Please select a future time"
+                        }
+                    }
+                ) {
+                    Text("OK", color = NeonGreen)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { 
+                    showTimePicker = false
+                    timeValidationError = null
+                }) {
+                    Text("Cancel", color = TextWhite.copy(alpha = 0.6f))
+                }
+            }
+        )
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = SheetBackground,
@@ -151,7 +355,7 @@ fun CreateEventUi(
                             AsyncImage(
                                 model = uiState.selectedImageUri,
                                 contentDescription = "Selected Image",
-                                contentScale = ContentScale.Crop,
+                                contentScale = ContentScale.Fit,
                                 modifier = Modifier.fillMaxSize()
                             )
                             // Resmin üzerine hafif bir karartma ve ikon koyalım ki değiştirilebileceği anlaşılsın
@@ -217,19 +421,19 @@ fun CreateEventUi(
                     // Date & Time Row
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         FormSection(label = "Date", modifier = Modifier.weight(1f)) {
-                            CustomTextField(
+                            ClickableField(
                                 value = uiState.date,
-                                onValueChange = onDateChange,
-                                placeholder = "Oct 24, 2023",
-                                trailingIcon = Icons.Default.CalendarToday
+                                placeholder = "Select date",
+                                trailingIcon = Icons.Default.CalendarToday,
+                                onClick = { showDatePicker = true }
                             )
                         }
                         FormSection(label = "Time", modifier = Modifier.weight(1f)) {
-                            CustomTextField(
+                            ClickableField(
                                 value = uiState.time,
-                                onValueChange = onTimeChange,
-                                placeholder = "8:00 PM",
-                                trailingIcon = Icons.Default.Schedule
+                                placeholder = "Select time",
+                                trailingIcon = Icons.Default.Schedule,
+                                onClick = { showTimePicker = true }
                             )
                         }
                     }
@@ -272,20 +476,6 @@ fun CreateEventUi(
                     }
                 }
             }
-
-            // Opsiyonel: Tam ekran loading overlay (İstersen açabilirsin)
-            /* if (uiState.isLoading) {
-                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f))
-                        .clickable(enabled = false) {}, // Tıklamayı engelle
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = NeonGreen)
-                }
-            }
-            */
         }
     }
 }
@@ -306,6 +496,41 @@ fun FormSection(
             modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
         )
         content()
+    }
+}
+
+@Composable
+fun ClickableField(
+    value: String,
+    placeholder: String,
+    trailingIcon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(InputBackground)
+            .border(1.dp, BorderColor, RoundedCornerShape(12.dp))
+            .clickable { onClick() }
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(modifier = Modifier.weight(1f)) {
+            Text(
+                text = value.ifEmpty { placeholder },
+                color = if (value.isEmpty()) TextHint else TextWhite,
+                style = TextStyle(fontSize = 16.sp)
+            )
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Icon(
+            imageVector = trailingIcon,
+            contentDescription = null,
+            tint = if (value.isEmpty()) TextHint else NeonGreen,
+            modifier = Modifier.size(20.dp)
+        )
     }
 }
 

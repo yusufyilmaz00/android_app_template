@@ -12,6 +12,7 @@ object Routes{
 
     // moderator only pages
     const val MODERATOR_EVENT = "ModeratorEvent"
+    const val CREATE_EVENT = "CreateEvent"
 
     // functional screens
     const val CLUB_DETAIL_BASE = "Club"
