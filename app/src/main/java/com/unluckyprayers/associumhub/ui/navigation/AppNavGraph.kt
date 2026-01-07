@@ -98,7 +98,11 @@ fun AppNavGraph(
 
         // Moderator only - Event screen
         composable(Routes.MODERATOR_EVENT) {
+            val eventViewModel: com.unluckyprayers.associumhub.ui.screen.event.EventViewModel = hiltViewModel()
+            
             EventScreen(
+                viewModel = eventViewModel,
+                navController = navController,
                 onBackClick = { navController.popBackStack() },
                 onAddEventClick = { navController.navigate(Routes.CREATE_EVENT) }
             )
@@ -107,7 +111,11 @@ fun AppNavGraph(
         // Create Event screen
         composable(Routes.CREATE_EVENT) {
             CreateEventScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { 
+                    navController.popBackStack()
+                    // EventScreen'e dönüldüğünde events'i yenile
+                    // Bu AppNavGraph seviyesinde yapılamaz, EventScreen'de yapılmalı
+                }
             )
         }
 

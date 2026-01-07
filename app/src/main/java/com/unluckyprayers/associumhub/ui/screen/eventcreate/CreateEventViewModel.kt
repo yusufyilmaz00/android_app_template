@@ -1,6 +1,7 @@
 package com.unluckyprayers.associumhub.ui.screen.eventcreate
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.unluckyprayers.associumhub.data.local.model.UserState
@@ -78,12 +79,15 @@ class CreateEventViewModel @Inject constructor(
 
         return result.fold(
             onSuccess = { uploadResult ->
+                Log.d("CreateEventViewModel", "Upload result: message=${uploadResult.message}, path=${uploadResult.path}, url=${uploadResult.url}")
                 uploadedImageUrl = uploadResult.url
+                Log.d("CreateEventViewModel", "uploadedImageUrl set to: $uploadedImageUrl")
                 imageUploadFailed = false
                 _uiState.update { it.copy(isUploadingImage = false) }
                 true
             },
-            onFailure = { _ ->
+            onFailure = { exception ->
+                Log.e("CreateEventViewModel", "Image upload failed: ${exception.message}", exception)
                 imageUploadFailed = true
                 uploadedImageUrl = null
                 _uiState.update { it.copy(isUploadingImage = false) }
@@ -158,13 +162,16 @@ class CreateEventViewModel @Inject constructor(
                 }
             }
 
+            val finalImageUrl = uploadedImageUrl ?: ""
+            Log.d("CreateEventViewModel", "Creating event with imageUrl: $finalImageUrl")
+            
             val params = CreateEventParams(
                 title = currentState.title,
                 date = convertDateForApi(currentState.date),
                 time = convertTimeForApi(currentState.time),
                 location = currentState.location,
                 description = currentState.description,
-                imageUrl = uploadedImageUrl ?: "",
+                imageUrl = finalImageUrl,
                 clubId = clubId
             )
 

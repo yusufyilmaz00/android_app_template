@@ -40,18 +40,20 @@ class EventRepositoryImpl @Inject constructor(
 
             // API çağrısı yap
             val response = api.uploadEventPoster(multipartBody)
+            
+            Log.d("EventRepository", "Upload response: success=${response.success}, posterUrl=${response.posterUrl}")
 
             // Geçici dosyayı sil
             file.delete()
 
             // Domain modele dönüştür
-            Result.success(
-                EventUploadResult(
-                    message = response.message,
-                    path = response.path,
-                    url = response.url
-                )
+            val uploadResult = EventUploadResult(
+                message = null,
+                path = null,
+                url = response.posterUrl
             )
+            Log.d("EventRepository", "EventUploadResult created: url=${uploadResult.url}")
+            Result.success(uploadResult)
         } catch (e: Exception) {
             e.printStackTrace()
             Result.failure(e)

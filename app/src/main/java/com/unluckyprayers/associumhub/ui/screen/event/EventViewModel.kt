@@ -103,6 +103,8 @@ class EventViewModel @Inject constructor(
             when (val authState = authRepository.userState.value) {
                 is UserState.Success -> {
                     authState.clubId?.let { clubId ->
+                        // lastLoadedClubId'yi güncelle ki loadEvents içinde tekrar kontrol edilsin
+                        lastLoadedClubId = null
                         loadEvents(clubId)
                     }
                 }
