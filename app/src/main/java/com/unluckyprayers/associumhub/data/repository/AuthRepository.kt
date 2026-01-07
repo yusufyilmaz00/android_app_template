@@ -70,6 +70,7 @@ class AuthRepository @Inject constructor() {
     private suspend fun saveToken(context: Context) {
         val accessToken = client.auth.currentAccessTokenOrNull()
         if (accessToken != null) {
+            Log.d("AuthRepository", "Access Token (JWT): $accessToken")
             val sharedPref = SharedPrefManager(context)
             sharedPref.saveString("accessToken", accessToken)
         }
