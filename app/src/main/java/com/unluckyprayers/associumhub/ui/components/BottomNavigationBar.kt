@@ -94,6 +94,12 @@ fun BottomNavigationBar(
                 unselectedIcon = Icons.Outlined.Search
             ),
             BottomNavItem(
+                route = Routes.USER_EVENT,
+                labelResId = R.string.bottom_nav_moderator_event,
+                selectedIcon = Icons.Filled.Event,
+                unselectedIcon = Icons.Outlined.Event
+            ),
+            BottomNavItem(
                 route = Routes.PROFILE,
                 labelResId = R.string.bottom_nav_page3,
                 selectedIcon = Icons.Filled.Person,

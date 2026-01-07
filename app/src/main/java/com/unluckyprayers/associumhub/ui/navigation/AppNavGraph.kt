@@ -26,6 +26,7 @@ import com.unluckyprayers.associumhub.ui.screen.club.ClubDetailScreen
 import com.unluckyprayers.associumhub.ui.screen.event.EventScreen
 import com.unluckyprayers.associumhub.ui.screen.eventcreate.CreateEventScreen
 import com.unluckyprayers.associumhub.ui.screen.qrcode.QRCodeScreen
+import com.unluckyprayers.associumhub.ui.screen.userevent.UserEventScreen
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
 import com.unluckyprayers.associumhub.ui.screen.login.LoginScreen
 import com.unluckyprayers.associumhub.ui.screen.profile.moderatorprofile.ModeratorProfileScreen
@@ -109,6 +110,11 @@ fun AppNavGraph(
                 onBackClick = { navController.popBackStack() },
                 onAddEventClick = { navController.navigate(Routes.CREATE_EVENT) }
             )
+        }
+
+        // User Event screen
+        composable(Routes.USER_EVENT) {
+            UserEventScreen()
         }
 
         // Create Event screen

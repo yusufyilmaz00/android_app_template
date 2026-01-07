@@ -7,6 +7,8 @@ import com.google.gson.Gson
 import com.unluckyprayers.associumhub.data.remote.dto.event.ClubEventsRequestDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventRequestDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventResponseDto
+import com.unluckyprayers.associumhub.data.remote.dto.event.SearchEventsRequestDto
+import com.unluckyprayers.associumhub.data.remote.dto.event.SearchEventsResponseDto
 import com.unluckyprayers.associumhub.data.remote.mapper.toDomain
 import com.unluckyprayers.associumhub.data.remote.service.ApiService
 import com.unluckyprayers.associumhub.domain.model.event.CreateEventParams
@@ -149,6 +151,25 @@ class EventRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Log.e("EventRepository", "Error fetching club events: ${e.message}", e)
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun searchEvents(queryText: String, page: Int, limit: Int): Result<Pair<List<EventUiModel>, Boolean>> {
+        return try {
+            val request = SearchEventsRequestDto(
+                queryText = queryText,
+                page = page,
+                limit = limit
+            )
+            val response = api.searchEvents(request)
+
+            val events = response.data?.map { it.toDomain() } ?: emptyList()
+            val hasMore = response.meta?.hasMore ?: false
+            
+            Result.success(Pair(events, hasMore))
+        } catch (e: Exception) {
+            Log.e("EventRepository", "Error searching events: ${e.message}", e)
             Result.failure(e)
         }
     }

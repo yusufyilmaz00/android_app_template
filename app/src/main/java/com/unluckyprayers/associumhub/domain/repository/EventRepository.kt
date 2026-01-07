@@ -9,4 +9,5 @@ interface EventRepository {
     suspend fun uploadEventPoster(imageUri: Uri): Result<EventUploadResult>
     suspend fun createEvent(params: CreateEventParams): Result<Unit>
     suspend fun getClubEvents(clubId: String): Result<List<EventUiModel>>
+    suspend fun searchEvents(queryText: String, page: Int, limit: Int): Result<Pair<List<EventUiModel>, Boolean>> // Returns events and hasMore
 }

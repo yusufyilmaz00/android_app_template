@@ -13,6 +13,9 @@ object Routes{
     // moderator only pages
     const val MODERATOR_EVENT = "ModeratorEvent"
     const val CREATE_EVENT = "CreateEvent"
+    
+    // user event page
+    const val USER_EVENT = "UserEvent"
     const val QR_CODE_BASE = "QRCode"
     const val EVENT_ID_ARG = "eventId"
     const val EVENT_TITLE_ARG = "eventTitle"

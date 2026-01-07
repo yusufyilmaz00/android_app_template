@@ -8,6 +8,8 @@ import com.unluckyprayers.associumhub.data.remote.dto.event.ClubEventsResponseDt
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventRequestDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventResponseDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.EventUploadResponseDto
+import com.unluckyprayers.associumhub.data.remote.dto.event.SearchEventsRequestDto
+import com.unluckyprayers.associumhub.data.remote.dto.event.SearchEventsResponseDto
 import com.unluckyprayers.associumhub.data.remote.dto.search.SearchRequest
 import com.unluckyprayers.associumhub.data.remote.dto.search.SearchResponse
 import com.unluckyprayers.associumhub.data.remote.dto.search.sector.AllSectorsResponse
@@ -57,4 +59,9 @@ interface ApiService {
     suspend fun getClubEvents(
         @Body request: ClubEventsRequestDto
     ): ClubEventsResponseDto
+
+    @POST("v1/search-events")
+    suspend fun searchEvents(
+        @Body request: SearchEventsRequestDto
+    ): SearchEventsResponseDto
 }
