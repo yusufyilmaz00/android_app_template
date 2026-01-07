@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -20,11 +21,13 @@ import androidx.navigation.navArgument
 import com.unluckyprayers.associumhub.data.local.model.UserState
 import com.unluckyprayers.associumhub.domain.viewmodel.AppViewModel
 import com.unluckyprayers.associumhub.ui.screen.club.ClubDetailScreen
+import com.unluckyprayers.associumhub.ui.screen.event.EventScreen
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
 import com.unluckyprayers.associumhub.ui.screen.login.LoginScreen
 import com.unluckyprayers.associumhub.ui.screen.profile.moderatorprofile.ModeratorProfileScreen
 import com.unluckyprayers.associumhub.ui.screen.profile.userprofile.UserProfileScreen
 import com.unluckyprayers.associumhub.ui.screen.register.RegisterScreen
+import com.unluckyprayers.associumhub.ui.screen.search.SearchClubScreen
 import com.unluckyprayers.associumhub.ui.screen.settings.SettingScreen
 import com.unluckyprayers.associumhub.ui.screen.settings.SettingsViewModel
 import com.unluckyprayers.associumhub.ui.screen.template.DrawerTemplateUI
@@ -45,7 +48,7 @@ fun AppNavGraph(
 
     NavHost(
         navController = navController as NavHostController,
-        startDestination = Routes.REGISTER,
+        startDestination = startDestination,
         modifier = modifier
     ) {
         // login and register
@@ -67,7 +70,7 @@ fun AppNavGraph(
                 onNavigateToRegister = {
                     navController.navigate(Routes.REGISTER)
                 },
-                onLoginSuccess = {
+                onLoginSuccess = { _ ->
                     navController.navigate(Routes.HOME) {
                         popUpTo(0)
                     }
@@ -87,7 +90,15 @@ fun AppNavGraph(
 
         composable(Routes.PAGE2)
         {
-            TemplateUI()
+            SearchClubScreen(onClubClick = { clubId ->
+                navController.navigate("${Routes.CLUB_DETAIL_BASE}/$clubId")
+            })
+        }
+
+        // Moderator only - Event screen
+        composable(Routes.MODERATOR_EVENT) {
+            // TODO: Moderatör etkinlik ekranı - şimdilik template kullanılıyor
+            EventScreen()
         }
 
         composable(Routes.PROFILE) {
@@ -104,8 +115,8 @@ fun AppNavGraph(
                     if (state.role == "moderator") {
                         ModeratorProfileScreen(navController = navController)
                     } else {
-                        //UserProfileScreen(navController = navController)
-                        ModeratorProfileScreen(navController = navController)
+                        UserProfileScreen(navController = navController)
+                        //ModeratorProfileScreen(navController = navController)
                     }
                 }
 
@@ -167,6 +178,8 @@ fun AppNavGraph(
         composable(Routes.SETTINGS)
         {
             val viewModel: SettingsViewModel = hiltViewModel()
+            val appViewModel: AppViewModel = hiltViewModel(navController.previousBackStackEntry!!)
+
             LaunchedEffect(Unit) {
                 viewModel.events.collect { event ->
                     when (event) {
@@ -174,10 +187,19 @@ fun AppNavGraph(
                             println("DEBUG: ChangeLanguage event'i - code: ${event.code}")
                             onChangeLanguage(event.code)
                         }
+
+                        is SettingsViewModel.SettingsEvent.Logout -> {
+                            appViewModel.logout()
+
+                            navController.navigate(Routes.LOGIN) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    inclusive = true
+                                }
+                            }
+                        }
                     }
                 }
             }
-
 
             SettingScreen(
                 viewModel = viewModel

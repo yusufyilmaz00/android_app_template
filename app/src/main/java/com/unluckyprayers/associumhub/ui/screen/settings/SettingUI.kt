@@ -1,9 +1,5 @@
 package com.unluckyprayers.associumhub.ui.screen.settings
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.copy
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,15 +9,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +36,8 @@ import com.unluckyprayers.associumhub.R
 @Composable
 fun SettingsUI(
     state: SettingState,
-    onLanguageSelected: (String) -> Unit
+    onLanguageSelected: (String) -> Unit,
+    onLogoutClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -57,6 +54,10 @@ fun SettingsUI(
             state = state,
             onLanguageSelected = onLanguageSelected
         )
+
+        androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.height(32.dp))
+
+        LogoutButton(onClick = onLogoutClick)
     }
 }
 
@@ -125,5 +126,27 @@ private fun LanguageRowSelector(
                 }
             }
         }
+    }
+}
+
+@androidx.compose.runtime.Composable
+private fun LogoutButton(onClick: () -> Unit) {
+    androidx.compose.material3.Button(
+        onClick = onClick,
+        modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
+        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+            containerColor = androidx.compose.material3.MaterialTheme.colorScheme.error,
+            contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onError
+        )
+    ) {
+        androidx.compose.material3.Icon(
+            imageVector = Icons.Default.Logout,
+            contentDescription = null // Buton metni zaten açıklayıcı
+        )
+        androidx.compose.foundation.layout.Spacer(modifier = androidx.compose.ui.Modifier.padding(horizontal = 4.dp))
+        androidx.compose.material3.Text(
+            text = androidx.compose.ui.res.stringResource(id = R.string.settings_logout_button),
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+        )
     }
 }

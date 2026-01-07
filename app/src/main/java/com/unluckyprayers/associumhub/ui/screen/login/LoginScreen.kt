@@ -15,7 +15,7 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
     onNavigateToRegister: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: (role: String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -24,7 +24,7 @@ fun LoginScreen(
         when (val state = uiState.authState) {
             is UserState.Success -> {
                 Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
-                onLoginSuccess() // Navigasyon için callback'i çağır
+                onLoginSuccess(state.role) // Navigasyon için rol bilgisi ile callback'i çağır
             }
             is UserState.Error -> {
                 Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()

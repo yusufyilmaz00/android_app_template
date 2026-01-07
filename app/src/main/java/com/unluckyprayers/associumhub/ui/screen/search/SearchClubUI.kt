@@ -32,18 +32,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.unluckyprayers.associumhub.domain.model.club.ClubItem
 import com.unluckyprayers.associumhub.domain.model.SectorUiModel
+import com.unluckyprayers.associumhub.domain.model.club.SearchClubUiModel
 import com.unluckyprayers.associumhub.ui.screen.home.ClubCard
 import com.unluckyprayers.associumhub.ui.theme.DarkBackground
 import com.unluckyprayers.associumhub.ui.theme.NeonGreen
 
 @Composable
 fun SearchUI(
-    state: SearchUIState,
+    state: SearchClubUiState,
     onSearchQueryChange: (String) -> Unit,
     onClearSearch: () -> Unit,
     onFilterButtonClick: () -> Unit,
     onSectorSelect: (Int) -> Unit,
     onResultClick: (Int) -> Unit,
+    onClearFilters: () -> Unit, // <--- YENİ EKLENDİ
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -64,7 +66,8 @@ fun SearchUI(
                 onClearClick = onClearSearch,
                 onFilterClick = onFilterButtonClick,
                 sectors = state.sectors,
-                onSectorSelect = onSectorSelect
+                onSectorSelect = onSectorSelect,
+                onClearFilters = onClearFilters // <--- PARAMETRE İLETİLDİ
             )
 
             Box(
@@ -119,13 +122,18 @@ fun SearchHeaderSection(
     onClearClick: () -> Unit,
     onFilterClick: () -> Unit,
     sectors: List<SectorUiModel>,
-    onSectorSelect: (Int) -> Unit
+    onSectorSelect: (Int) -> Unit,
+    onClearFilters: () -> Unit // <--- YENİ EKLENDİ
 ) {
+    // Aktif filtre var mı kontrolü (Rengi belirlemek için)
+    val isAnyFilterActive = sectors.any { it.isSelected }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp, bottom = 24.dp)
     ) {
+        // --- ÜST ARAMA BAR ---
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -201,12 +209,45 @@ fun SearchHeaderSection(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        // --- ALT KISIM: LİSTE + SABİT BUTON ---
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            items(sectors, key = { it.id }) { sector ->
-                SectorChip(item = sector, onClick = { onSectorSelect(sector.id) })
+            // 1. Kayan Liste (Solda, Esnek Alan)
+            LazyRow(
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(start = 16.dp, end = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(sectors, key = { it.id }) { sector ->
+                    SectorChip(item = sector, onClick = { onSectorSelect(sector.id) })
+                }
+            }
+
+            // 2. Ayırıcı Çizgi
+            Box(
+                modifier = Modifier
+                    .height(24.dp)
+                    .width(1.dp)
+                    .background(Color.White.copy(alpha = 0.15f))
+            )
+
+            // 3. Sabit Temizle Butonu (Sağda, Sabit)
+            IconButton(
+                onClick = { if (isAnyFilterActive) onClearFilters() },
+                enabled = isAnyFilterActive, // Aktif değilse tıklanamasın
+                modifier = Modifier.padding(horizontal = 4.dp)
+            ) {
+                // Aktif ise Kırmızı, Pasif ise Soluk Gri
+                val contentColor = if (isAnyFilterActive) Color(0xFFFF4444) else Color.Gray.copy(alpha = 0.4f)
+
+                Icon(
+                    imageVector = Icons.Default.DeleteSweep, // Süpürge ikonu
+                    contentDescription = "Clear Filters",
+                    tint = contentColor,
+                    modifier = Modifier.size(26.dp)
+                )
             }
         }
     }
@@ -263,7 +304,7 @@ fun SectorChip(
 
 @Composable
 fun SearchResultsGrid(
-    results: List<ClubItem>,
+    results: List<SearchClubUiModel>,
     onResultClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -274,10 +315,10 @@ fun SearchResultsGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier
     ) {
-        items(results, key = { it.id }) { result ->
+        items(results, key = { it.club.id }) { result ->
             ClubCard(
-                clubItem = result,
-                onClick = { onResultClick(result.id) }
+                clubItem = result.club,
+                onClick = { onResultClick(result.club.id) }
             )
         }
     }
@@ -323,18 +364,20 @@ fun SearchUIPreview() {
     )
 
     val mockResults = listOf(
-        ClubItem(1, "Robotics Club", 2019, ""),
-        ClubItem(2, "AI Society", 2021, ""),
-        ClubItem(3, "Dev Team", 2023, ""),
-        ClubItem(4, "VR Lab", 2020, "")
+        SearchClubUiModel(ClubItem(1, "Tech Club", 2023, ""), listOf(1,2,3)),
+        SearchClubUiModel(ClubItem(2, "Design Club", 2022, ""), listOf(2)),
+        SearchClubUiModel(ClubItem(3, "Engineering Club", 2021, ""), listOf(3)),
+        SearchClubUiModel(ClubItem(4, "Business Club", 2020, ""), listOf(4))
     )
 
     var previewState by remember {
         mutableStateOf(
-            SearchUIState(
+            SearchClubUiState(
                 searchQuery = "Tech",
                 sectors = mockSectors,
-                searchResults = mockResults
+                searchResults = mockResults,
+                isLoading = false,
+                errorMessage = null
             )
         )
     }
@@ -351,7 +394,11 @@ fun SearchUIPreview() {
                 }
                 previewState = previewState.copy(sectors = updatedSectors)
             },
-            onResultClick = {}
+            onResultClick = {},
+            onClearFilters = { // Preview için boş fonksiyon
+                val clearedSectors = previewState.sectors.map { it.copy(isSelected = false) }
+                previewState = previewState.copy(sectors = clearedSectors)
+            }
         )
     }
 }

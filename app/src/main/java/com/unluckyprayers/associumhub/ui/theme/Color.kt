@@ -48,3 +48,14 @@ val GlassPanelColor = Color(0xFF14191E).copy(alpha = 0.6f)
 val CardBorderColor = Color(0xFFFFFFFF).copy(alpha = 0.08f)
 
 private val GlassBottomNavColor = Color(0xFF050b14).copy(alpha = 0.8f)
+
+// event screen
+val TextPrimary = Color(0xFFE2E8F0)
+val TextSecondary = Color(0xFF94A3B8)
+
+// create event screen
+val SheetBackground = Color(0xFF0D1A2E)
+val InputBackground = Color(0xFF000000).copy(alpha = 0.2f)
+val TextWhite = Color(0xFFFFFFFF)
+val TextHint = Color(0xFFFFFFFF).copy(alpha = 0.4f)
+val BorderColor = Color(0xFFFFFFFF).copy(alpha = 0.1f)

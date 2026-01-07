@@ -2,6 +2,7 @@ package com.unluckyprayers.associumhub.di
 
 import android.content.Context
 import androidx.room.Room
+import com.unluckyprayers.associumhub.data.local.dao.SectorDao
 import com.unluckyprayers.associumhub.data.local.dao.SystemMessageDao
 import com.unluckyprayers.associumhub.data.local.database.AssociumHubDatabase
 import dagger.Module
@@ -24,12 +25,20 @@ object DatabaseModule {
             context,
             AssociumHubDatabase::class.java,
             "associum_hub_db"
-        ).build()
+        )
+        .fallbackToDestructiveMigration()
+        .build()
     }
 
     @Provides
     @Singleton
     fun provideSystemMessageDao(database: AssociumHubDatabase): SystemMessageDao {
         return database.systemMessageDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSectorDao(database: AssociumHubDatabase): SectorDao {
+        return database.sectorDao()
     }
 }

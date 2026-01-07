@@ -40,6 +40,12 @@ class AppViewModel @Inject constructor(
         }
     }
 
+    fun logout() {
+        viewModelScope.launch {
+            authRepository.logout()
+        }
+    }
+
     /**
      * Uygulama genelindeki tam ekran yükleme animasyonunu gösterir veya gizler.
      * @param show Yükleme ekranı gösterilsin mi?

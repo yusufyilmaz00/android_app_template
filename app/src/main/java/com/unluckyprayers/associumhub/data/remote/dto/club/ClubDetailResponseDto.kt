@@ -2,7 +2,6 @@ package com.unluckyprayers.associumhub.data.remote.dto.club
 
 
 import com.google.gson.annotations.SerializedName
-import com.unluckyprayers.associumhub.domain.model.club.Club
 
 /**
  * API'den gelen tek bir kulüp detay verisini karşılayan DTO.

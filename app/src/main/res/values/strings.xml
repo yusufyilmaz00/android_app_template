@@ -8,8 +8,11 @@
 
     <!-- Bottom Navigation -->
     <string name="bottom_nav_home">Home</string>
-    <string name="bottom_nav_page2">Page 2</string>
+    <string name="bottom_nav_page2">Search</string>
     <string name="bottom_nav_page3">Profile</string>
+
+    <!-- Moderator Bottom Navigation -->
+    <string name="bottom_nav_moderator_event">Events</string>
 
     <!-- Navigation Drawer -->
     <string name="drawer_menu_title">Menu</string>
@@ -22,4 +25,5 @@
     <string name="template_ui_title">Template UI</string>
     <string name="drawer_template_ui_title">Drawer Template UI</string>
     <string name="settings_language_label">Application Language</string>
+    <string name="settings_logout_button">Logout</string>
 </resources>

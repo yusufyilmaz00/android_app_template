@@ -82,8 +82,7 @@ fun TopNavigationOverlay() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .statusBarsPadding(), // Sistem barının altında başlasın
+            .padding(16.dp), // Sistem barının altında başlasın
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

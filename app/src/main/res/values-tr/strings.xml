@@ -12,6 +12,9 @@
     <string name="bottom_nav_page2">Sayfa 2</string>
     <string name="bottom_nav_page3">Sayfa 3</string>
 
+    <!-- Moderatör Alt Navigasyon -->
+    <string name="bottom_nav_moderator_event">Etkinlikler</string>
+
     <!-- Gezinme Çekmecesi (Navigation Drawer) -->
     <string name="drawer_menu_title">Menü</string>
     <string name="drawer_item_profile">Profil</string>
@@ -24,5 +27,6 @@
     <string name="drawer_template_ui_title">Drawer Template Arayüzü</string>
 
     <string name="settings_language_label">Uygulama Dili</string>
+    <string name="settings_logout_button">Çıkış Yap</string>
 </resources>
 

@@ -5,11 +5,13 @@ object Routes{
     const val REGISTER = "Register"
     const val LOGIN = "Login"
 
-    // screen pages
-
+    // screen pages (standard user)
     const val HOME = "Home"
     const val PAGE2 = "Page 2"
     const val PROFILE = "Profile"
+
+    // moderator only pages
+    const val MODERATOR_EVENT = "ModeratorEvent"
 
     // functional screens
     const val CLUB_DETAIL_BASE = "Club"

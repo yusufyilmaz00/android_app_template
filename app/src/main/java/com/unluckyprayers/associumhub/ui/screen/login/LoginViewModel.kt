@@ -23,8 +23,6 @@ class LoginViewModel @Inject constructor(
     val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
 
     init {
-        authRepository.resetAuthState()
-
         authRepository.userState
             .onEach { authState ->
                 _uiState.update { it.copy(authState = authState) }
@@ -42,6 +40,7 @@ class LoginViewModel @Inject constructor(
 
     fun onLoginClicked(context: Context) {
         viewModelScope.launch {
+            authRepository.resetAuthState()
             authRepository.login(
                 context = context,
                 userEmail = _uiState.value.email,

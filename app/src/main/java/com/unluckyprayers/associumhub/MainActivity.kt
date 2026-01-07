@@ -110,6 +110,12 @@ fun MainScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    // Kullanıcı rolünü authState'ten çıkar
+    val userRole = when (authState) {
+        is UserState.Success -> authState.role
+        else -> "standard_user"
+    }
+
     if (!Routes.isAuthRoute(currentRoute)) {
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         ModalNavigationDrawer(
@@ -125,7 +131,7 @@ fun MainScreen(
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 topBar = { MainTopAppBar(drawerState = drawerState) },
-                bottomBar = { BottomNavigationBar(navController) }
+                bottomBar = { BottomNavigationBar(navController = navController, userRole = userRole) }
             ) { innerPadding ->
                 AppNavGraph(
                     navController = navController,

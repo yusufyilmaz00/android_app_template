@@ -25,6 +25,7 @@ fun SettingScreen(
         onLanguageSelected = { newLangCode ->
             println("DEBUG SettingsUI: onLanguageSelected çağrıldı - newLangCode: $newLangCode")
             viewModel.onLanguageChange(newLangCode)
-        }
+        },
+        onLogoutClick = { viewModel.onLogoutClick() }
     )
 }

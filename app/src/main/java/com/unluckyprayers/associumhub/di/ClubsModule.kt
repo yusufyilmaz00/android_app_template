@@ -1,5 +1,6 @@
 package com.unluckyprayers.associumhub.di
 
+import com.unluckyprayers.associumhub.data.local.dao.SectorDao
 import com.unluckyprayers.associumhub.data.remote.service.ApiService
 import com.unluckyprayers.associumhub.data.repository.ClubRepositoryImpl
 import com.unluckyprayers.associumhub.domain.repository.ClubRepository
@@ -22,8 +23,8 @@ object ClubsModule {
 
     @Provides
     @Singleton
-    fun provideClubRepository(api: ApiService): ClubRepository =
-        ClubRepositoryImpl(api)
+    fun provideClubRepository(api: ApiService, sectorDao: SectorDao): ClubRepository =
+        ClubRepositoryImpl(api, sectorDao)
 
     @Provides
     @Singleton

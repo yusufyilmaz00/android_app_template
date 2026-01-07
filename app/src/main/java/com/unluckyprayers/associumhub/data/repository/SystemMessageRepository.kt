@@ -1,7 +1,7 @@
 package com.unluckyprayers.associumhub.data.repository
 
 import com.unluckyprayers.associumhub.data.local.dao.SystemMessageDao
-import com.unluckyprayers.associumhub.data.local.model.SystemMessageEntity
+import com.unluckyprayers.associumhub.data.local.entity.SystemMessageEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject

@@ -25,6 +25,7 @@ object NetworkModule {
         return Interceptor { chain ->
             val newRequest = chain.request()
                 .newBuilder()
+                .addHeader("apiKey",supabaseKey)
                 .addHeader("Authorization", "Bearer $supabaseKey")
                 .build()
 

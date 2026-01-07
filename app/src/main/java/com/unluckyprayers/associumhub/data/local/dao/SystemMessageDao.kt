@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.unluckyprayers.associumhub.data.local.model.SystemMessageEntity
+import com.unluckyprayers.associumhub.data.local.entity.SystemMessageEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

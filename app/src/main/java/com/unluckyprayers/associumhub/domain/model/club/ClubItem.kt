@@ -4,5 +4,5 @@ data class ClubItem(
     val id: Int,
     val name: String,
     val foundedYear: Int,
-    val logoUrl: String
+    val logoUrl: String?
 )

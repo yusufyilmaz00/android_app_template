@@ -58,7 +58,14 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
         _eventChannel.trySend(SettingsEvent.ChangeLanguage(newLanguageCode))
     }
 
+    fun onLogoutClick() {
+        // Oturumu kapatma isteğini bir event olarak gönder.
+        // Asıl çıkış işlemi ve navigasyon, bu event'i dinleyen üst katmanda (NavGraph/Activity) yapılacak.
+        _eventChannel.trySend(SettingsEvent.Logout)
+    }
+
     sealed class SettingsEvent {
         data class ChangeLanguage(val code: String) : SettingsEvent()
+        data object Logout : SettingsEvent()
     }
 }
