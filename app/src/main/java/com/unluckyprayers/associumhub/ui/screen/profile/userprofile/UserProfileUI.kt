@@ -68,8 +68,7 @@ private fun UserTopNavigation(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .statusBarsPadding(),
+            .padding(16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
