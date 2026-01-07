@@ -3,6 +3,8 @@ package com.unluckyprayers.associumhub.ui.screen.eventcreate
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.unluckyprayers.associumhub.data.local.model.UserState
+import com.unluckyprayers.associumhub.data.repository.AuthRepository
 import com.unluckyprayers.associumhub.domain.model.event.CreateEventParams
 import com.unluckyprayers.associumhub.domain.usecase.CreateEventUseCase
 import com.unluckyprayers.associumhub.domain.usecase.UploadEventPosterUseCase
@@ -19,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateEventViewModel @Inject constructor(
     private val uploadEventPosterUseCase: UploadEventPosterUseCase,
-    private val createEventUseCase: CreateEventUseCase
+    private val createEventUseCase: CreateEventUseCase,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateEventUiState())
@@ -133,6 +136,28 @@ class CreateEventViewModel @Inject constructor(
             uploadPosterIfNeeded()
 
             // 3. Event oluşturma API çağrısı
+            // Kullanıcının club ID'sini authState'ten al
+            val clubId = when (val authState = authRepository.userState.value) {
+                is UserState.Success -> authState.clubId ?: run {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            result = CreateEventResult.Error("Kulüp bilgisi bulunamadı")
+                        )
+                    }
+                    return@launch
+                }
+                else -> {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            result = CreateEventResult.Error("Kullanıcı bilgisi alınamadı")
+                        )
+                    }
+                    return@launch
+                }
+            }
+
             val params = CreateEventParams(
                 title = currentState.title,
                 date = convertDateForApi(currentState.date),
@@ -140,7 +165,7 @@ class CreateEventViewModel @Inject constructor(
                 location = currentState.location,
                 description = currentState.description,
                 imageUrl = uploadedImageUrl ?: "",
-                clubId = "1" // TODO: Gerçek club ID'yi kullan
+                clubId = clubId
             )
 
             val createResult = createEventUseCase(params)

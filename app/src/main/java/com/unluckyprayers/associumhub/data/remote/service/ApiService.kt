@@ -3,6 +3,8 @@ package com.unluckyprayers.associumhub.data.remote.service
 
 import com.unluckyprayers.associumhub.data.remote.dto.club.ClubDetailResponseDto
 import com.unluckyprayers.associumhub.data.remote.dto.club.ClubsApiResponseDto
+import com.unluckyprayers.associumhub.data.remote.dto.event.ClubEventsRequestDto
+import com.unluckyprayers.associumhub.data.remote.dto.event.ClubEventsResponseDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventRequestDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventResponseDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.EventUploadResponseDto
@@ -50,4 +52,9 @@ interface ApiService {
     suspend fun createEvent(
         @Body request: CreateEventRequestDto
     ): CreateEventResponseDto
+
+    @POST("v1/club-events")
+    suspend fun getClubEvents(
+        @Body request: ClubEventsRequestDto
+    ): ClubEventsResponseDto
 }

@@ -5,6 +5,7 @@ import com.unluckyprayers.associumhub.data.remote.service.ApiService
 import com.unluckyprayers.associumhub.data.repository.EventRepositoryImpl
 import com.unluckyprayers.associumhub.domain.repository.EventRepository
 import com.unluckyprayers.associumhub.domain.usecase.CreateEventUseCase
+import com.unluckyprayers.associumhub.domain.usecase.GetClubEventsUseCase
 import com.unluckyprayers.associumhub.domain.usecase.UploadEventPosterUseCase
 import dagger.Module
 import dagger.Provides
@@ -36,4 +37,10 @@ object EventModule {
     fun provideCreateEventUseCase(
         repository: EventRepository
     ): CreateEventUseCase = CreateEventUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetClubEventsUseCase(
+        repository: EventRepository
+    ): GetClubEventsUseCase = GetClubEventsUseCase(repository)
 }

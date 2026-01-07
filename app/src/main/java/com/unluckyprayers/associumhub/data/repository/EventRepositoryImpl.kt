@@ -4,10 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.google.gson.Gson
+import com.unluckyprayers.associumhub.data.remote.dto.event.ClubEventsRequestDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventRequestDto
 import com.unluckyprayers.associumhub.data.remote.dto.event.CreateEventResponseDto
+import com.unluckyprayers.associumhub.data.remote.mapper.toDomain
 import com.unluckyprayers.associumhub.data.remote.service.ApiService
 import com.unluckyprayers.associumhub.domain.model.event.CreateEventParams
+import com.unluckyprayers.associumhub.domain.model.event.EventUiModel
 import com.unluckyprayers.associumhub.domain.model.event.EventUploadResult
 import com.unluckyprayers.associumhub.domain.repository.EventRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -128,6 +131,23 @@ class EventRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             null
+        }
+    }
+
+    override suspend fun getClubEvents(clubId: String): Result<List<EventUiModel>> {
+        return try {
+            val request = ClubEventsRequestDto(clubId = clubId)
+            val response = api.getClubEvents(request)
+
+            if (response.error != null) {
+                Result.failure(Exception(response.error))
+            } else {
+                val events = response.events?.map { it.toDomain() } ?: emptyList()
+                Result.success(events)
+            }
+        } catch (e: Exception) {
+            Log.e("EventRepository", "Error fetching club events: ${e.message}", e)
+            Result.failure(e)
         }
     }
 }

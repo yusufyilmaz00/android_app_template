@@ -33,7 +33,8 @@ class AuthRepository @Inject constructor() {
                 password = userPassword
             }
             saveToken(context)
-            _userState.value = UserState.Success("Registered user successfully!", role = "standard_user")        } catch (e: Exception) {
+            _userState.value = UserState.Success("Registered user successfully!", role = "standard_user", clubId = null)
+        } catch (e: Exception) {
         } catch (e : Exception ){
             _userState.value = UserState.Error(e.message ?: "Unknown sign-up error")
         }
@@ -50,9 +51,10 @@ class AuthRepository @Inject constructor() {
             saveToken(context)
             val user = client.auth.currentUserOrNull()
             val role = user?.appMetadata?.get("role")?.jsonPrimitive?.content ?: "standard_user"
-            Log.d("AuthRepository", "User role: $role")
+            val clubId = user?.appMetadata?.get("club_id")?.jsonPrimitive?.content
+            Log.d("AuthRepository", "User role: $role, clubId: $clubId")
 
-            _userState.value = UserState.Success("Logged in user successfully!", role = role)
+            _userState.value = UserState.Success("Logged in user successfully!", role = role, clubId = clubId)
         } catch (e: Exception) {
             _userState.value = UserState.Error(e.message ?: "Unknown login error")
         }
@@ -61,7 +63,7 @@ class AuthRepository @Inject constructor() {
     suspend fun logout() {
         try {
             client.auth.signOut()
-            _userState.value = UserState.Success("Logged out successfully!", role = "standard_user")
+            _userState.value = UserState.Success("Logged out successfully!", role = "standard_user", clubId = null)
         } catch (e: Exception) {
             _userState.value = UserState.Error(e.message ?: "Unknown logout error")
         }
@@ -92,7 +94,8 @@ class AuthRepository @Inject constructor() {
                 saveToken(context)
                 val user = client.auth.currentUserOrNull()
                 val role = user?.appMetadata?.get("role")?.jsonPrimitive?.content ?: "standard_user"
-                _userState.value = UserState.Success("User is already logged in!",role = role)
+                val clubId = user?.appMetadata?.get("club_id")?.jsonPrimitive?.content
+                _userState.value = UserState.Success("User is already logged in!", role = role, clubId = clubId)
             }
         } catch (e: Exception) {
             _userState.value = UserState.Error(e.message ?: "Unknown error while checking user status")
