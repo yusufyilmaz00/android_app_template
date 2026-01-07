@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -40,7 +41,8 @@ import com.unluckyprayers.associumhub.ui.theme.TextSecondary
 fun EventUi(
     uiState: EventUiState,
     onBackClick: () -> Unit = {},
-    onAddEventClick: () -> Unit = {}
+    onAddEventClick: () -> Unit = {},
+    onQRClick: (String, String, String) -> Unit = { _, _, _ -> }
 ) {
     Scaffold(
         containerColor = AssociumBackground,
@@ -86,7 +88,10 @@ fun EventUi(
                         contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp)
                     ) {
                         items(uiState.events) { event ->
-                            EventCard(event = event)
+                            EventCard(
+                                event = event,
+                                onQRClick = { onQRClick(event.id, event.title, event.imageUrl) }
+                            )
                         }
                     }
                 }
@@ -151,7 +156,10 @@ fun EventTopBar(
 }
 
 @Composable
-fun EventCard(event: EventUiModel) {
+fun EventCard(
+    event: EventUiModel,
+    onQRClick: () -> Unit = {}
+) {
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = AssociumSurface),
@@ -184,9 +192,11 @@ fun EventCard(event: EventUiModel) {
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // --- METİN BÖLÜMÜ (Aynı kaldı) ---
+            // --- METİN BÖLÜMÜ ---
             Column(
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
@@ -223,6 +233,23 @@ fun EventCard(event: EventUiModel) {
                         color = TextSecondary
                     )
                 }
+            }
+            
+            // --- QR BUTONU ---
+            Spacer(modifier = Modifier.width(8.dp))
+            
+            IconButton(
+                onClick = onQRClick,
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.QrCode2,
+                    contentDescription = "QR Code",
+                    tint = AssociumPrimary,
+                    modifier = Modifier.size(28.dp)
+                )
             }
         }
     }

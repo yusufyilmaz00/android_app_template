@@ -32,6 +32,11 @@ fun EventScreen(
     EventUi(
         uiState = uiState,
         onBackClick = onBackClick,
-        onAddEventClick = onAddEventClick
+        onAddEventClick = onAddEventClick,
+        onQRClick = { eventId, eventTitle, imageUrl ->
+            val encodedTitle = java.net.URLEncoder.encode(eventTitle, java.nio.charset.StandardCharsets.UTF_8.toString())
+            val encodedImageUrl = java.net.URLEncoder.encode(imageUrl, java.nio.charset.StandardCharsets.UTF_8.toString())
+            navController.navigate("${Routes.QR_CODE_BASE}/$eventId/$encodedTitle/$encodedImageUrl")
+        }
     )
 }

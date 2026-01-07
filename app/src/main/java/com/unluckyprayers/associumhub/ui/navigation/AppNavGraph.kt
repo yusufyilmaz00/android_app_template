@@ -18,11 +18,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import com.unluckyprayers.associumhub.data.local.model.UserState
 import com.unluckyprayers.associumhub.domain.viewmodel.AppViewModel
 import com.unluckyprayers.associumhub.ui.screen.club.ClubDetailScreen
 import com.unluckyprayers.associumhub.ui.screen.event.EventScreen
 import com.unluckyprayers.associumhub.ui.screen.eventcreate.CreateEventScreen
+import com.unluckyprayers.associumhub.ui.screen.qrcode.QRCodeScreen
 import com.unluckyprayers.associumhub.ui.screen.home.HomeScreen
 import com.unluckyprayers.associumhub.ui.screen.login.LoginScreen
 import com.unluckyprayers.associumhub.ui.screen.profile.moderatorprofile.ModeratorProfileScreen
@@ -116,6 +119,29 @@ fun AppNavGraph(
                     // EventScreen'e dönüldüğünde events'i yenile
                     // Bu AppNavGraph seviyesinde yapılamaz, EventScreen'de yapılmalı
                 }
+            )
+        }
+
+        // QR Code screen
+        composable(
+            route = Routes.QR_CODE,
+            arguments = listOf(
+                navArgument(Routes.EVENT_ID_ARG) { type = NavType.StringType },
+                navArgument(Routes.EVENT_TITLE_ARG) { type = NavType.StringType },
+                navArgument(Routes.EVENT_IMAGE_URL_ARG) { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString(Routes.EVENT_ID_ARG) ?: ""
+            val eventTitle = backStackEntry.arguments?.getString(Routes.EVENT_TITLE_ARG) ?: ""
+            val imageUrl = backStackEntry.arguments?.getString(Routes.EVENT_IMAGE_URL_ARG) ?: ""
+            val decodedTitle = URLDecoder.decode(eventTitle, StandardCharsets.UTF_8.toString())
+            val decodedImageUrl = URLDecoder.decode(imageUrl, StandardCharsets.UTF_8.toString())
+            
+            QRCodeScreen(
+                eventId = eventId,
+                eventTitle = decodedTitle,
+                imageUrl = decodedImageUrl,
+                onBackClick = { navController.popBackStack() }
             )
         }
 

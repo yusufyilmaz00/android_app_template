@@ -13,6 +13,11 @@ object Routes{
     // moderator only pages
     const val MODERATOR_EVENT = "ModeratorEvent"
     const val CREATE_EVENT = "CreateEvent"
+    const val QR_CODE_BASE = "QRCode"
+    const val EVENT_ID_ARG = "eventId"
+    const val EVENT_TITLE_ARG = "eventTitle"
+    const val EVENT_IMAGE_URL_ARG = "eventImageUrl"
+    const val QR_CODE = "$QR_CODE_BASE/{$EVENT_ID_ARG}/{$EVENT_TITLE_ARG}/{$EVENT_IMAGE_URL_ARG}"
 
     // functional screens
     const val CLUB_DETAIL_BASE = "Club"
