@@ -60,12 +60,22 @@ class AuthRepository @Inject constructor() {
         }
     }
 
-    suspend fun logout() {
+    suspend fun logout(context: Context) {
         try {
+            // Supabase'den çıkış yap
             client.auth.signOut()
-            _userState.value = UserState.Success("Logged out successfully!", role = "standard_user", clubId = null)
+            
+            // Token'ı SharedPreferences'tan sil
+            val sharedPref = SharedPrefManager(context)
+            sharedPref.deleteString("accessToken")
+            
+            // UserState'i Idle'a set et (Success yerine, böylece otomatik giriş yapılmaz)
+            _userState.value = UserState.Idle
         } catch (e: Exception) {
-            _userState.value = UserState.Error(e.message ?: "Unknown logout error")
+            // Hata olsa bile token'ı sil ve state'i reset et
+            val sharedPref = SharedPrefManager(context)
+            sharedPref.deleteString("accessToken")
+            _userState.value = UserState.Idle
         }
     }
 

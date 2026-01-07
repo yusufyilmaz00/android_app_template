@@ -8,6 +8,7 @@ import com.unluckyprayers.associumhub.data.local.model.UserState
 import com.unluckyprayers.associumhub.data.repository.AuthRepository
 import com.unluckyprayers.associumhub.ui.common.AppState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AppState())
@@ -40,9 +42,12 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
-        viewModelScope.launch {
-            authRepository.logout()
+    suspend fun logout() {
+        showAppLoading(true)
+        try {
+            authRepository.logout(context)
+        } finally {
+            showAppLoading(false)
         }
     }
 

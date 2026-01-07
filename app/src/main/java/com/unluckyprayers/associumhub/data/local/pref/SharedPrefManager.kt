@@ -19,4 +19,11 @@ class SharedPrefManager (private val context: Context) {
         val sharedPref = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
         return sharedPref.getString(key, null)
     }
+    
+    fun deleteString(key: String) {
+        val sharedPref = context.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.remove(key)
+        editor.apply()
+    }
 }

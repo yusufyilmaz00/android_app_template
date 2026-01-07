@@ -233,8 +233,10 @@ fun AppNavGraph(
                         }
 
                         is SettingsViewModel.SettingsEvent.Logout -> {
+                            // Logout işlemini await et
                             appViewModel.logout()
-
+                            
+                            // Logout tamamlandıktan sonra navigation yap
                             navController.navigate(Routes.LOGIN) {
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     inclusive = true
